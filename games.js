@@ -33,14 +33,20 @@ class Games {
     }
 
     addUser(game_number, socket_id) {
-        if(!(this.hasUser(game_number, socket_id))) {
-            if(this.has(game_number) && this.game_session[game_number].started === false && 
-                    this.game_session[game_number].add(socket_id)) {
-                this.users[socket_id] = game_number;
-                return true;
-            }
+        if(this.hasUser(game_number, socket_id)) {
+            return 'Client already in game';
         }
-        return false;
+        if(!this.has(game_number)) {
+            return 'Game number does not exist';
+        }
+        if(this.game_session[game_number].started) {
+            return 'Game in progress';
+        }
+        if(!this.game_session[game_number].add(socket_id)) {
+            return 'Full game session';
+        }
+        this.users[socket_id] = game_number;
+        return '';
     }
 
     removeUser(game_number, socket_id) {
@@ -86,6 +92,36 @@ class Games {
         if(this.has(game_number)) {
             this.game_session[game_number].setStarted(started);
         }
+    }
+
+    generateGame(socket_id) {
+        let game_number = null;
+
+        do {
+            game_number = "#" + ~~(Math.random() * (99999 - 10000) + 10000);
+        } while(this.has(game_number));
+
+        this.add(game_number);
+        this.addUser(game_number, socket_id);
+
+        return game_number;
+    }
+
+    checkGameNumber(game_number, socket_id) {
+        return this.addUser(game_number, socket_id);
+    }
+
+    checkNickname(game_number, nickname) {
+        if(this.findUserInAGameSessionByNickname(game_number, nickname) !== null)
+            return "Nickname already used";
+        if(nickname.length > 8)
+            return "Nickname too long";
+        if(nickname.length < 3)
+            return "Nickname too short";
+        if(nickname.match("^[A-Za-z0-9]+$") === null)
+            return "Nickname can only have letters and numbers";
+        
+        return "";
     }
 }
 

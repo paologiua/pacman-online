@@ -29,45 +29,17 @@ server.listen(5000, function () {
 var map = new Map;
 var games = new Games;
 
-function generateGame(socket_id) {
-  let game_number = null;
-
-  do {
-    game_number = "#" + ~~(Math.random() * 100000);
-
-    while(game_number.length < 6)
-      game_number += '0';
-  
-  } while(game_number in games);
-
-  games.add(game_number);
-  games.addUser(game_number, socket_id);
-
-  return game_number;
-}
-
-function checkGameNumber(game_number, socket_id) {
-  return games.addUser(game_number, socket_id);
-}
-
-function checkNickname(game_number, nickname) {
-  if(games.findUserInAGameSessionByNickname(game_number, nickname) !== null || 
-      nickname.length > 8 || nickname.length < 3)
-    return false;
-  return (nickname.match("^[A-Za-z0-9]+$") !== null);
-}
-
 io.on('connection', function (socket) {
   socket.on('new game', function () {
-    let game_number = generateGame(socket.id);
+    let game_number = games.generateGame(socket.id);
     socket.emit('game number', game_number);
     socket.join(game_number);
   });
 
   socket.on('check game number', function (game_number) {
-    let game_number_ok = checkGameNumber(game_number, socket.id);
-    socket.emit('valid game number', game_number_ok);
-    if(game_number_ok) {
+    let error = games.checkGameNumber(game_number, socket.id);
+    socket.emit('valid game number', error);
+    if(!error) {
       socket.join(game_number);
       io.to(game_number).emit('connected users', { 'game_number' : game_number, 'participants' : games.getUsersInAGameSession(game_number) });
     }
@@ -75,15 +47,15 @@ io.on('connection', function (socket) {
 
   socket.on('check nickname', function (nickname) {
     let game_number = games.getUserGameNumber(socket.id);
-    let check_nickname = checkNickname(game_number, nickname);
+    let error = games.checkNickname(game_number, nickname);
 
-    if(check_nickname) {
+    if(!error) {
       games.setUserNickname(game_number, socket.id, nickname);
       
       io.to(game_number).emit('connected users', { 'game_number' : game_number, 'participants' : games.getUsersInAGameSession(game_number) });
     }
 
-    socket.emit('valid nickname', check_nickname);
+    socket.emit('valid nickname', error);
   });
 
   socket.on('start game', function (game_number) {

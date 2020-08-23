@@ -142,12 +142,13 @@ import { PacMan, Ghost } from './figure.js';
     socket.emit('check game number', game_number);
   }
 
-  socket.on('valid game number', function(valid) {
-    if(valid) {
+  socket.on('valid game number', function(error) {
+    if(!error) {
       hideGameNumberPage();
       showNicknamePage();
     } else {
       dark_game_number_field.addClass('is-error');
+      $('#game_number_error').html(error);
     }
   });
 
@@ -155,12 +156,13 @@ import { PacMan, Ghost } from './figure.js';
     socket.emit('check nickname', nickname_val);
   }
 
-  socket.on('valid nickname', function(valid) {
-    if(valid) {
+  socket.on('valid nickname', function(error) {
+    if(!error) {
       hideNicknamePage();
       showListPlayerPage();
     } else {
       dark_nickname_field.addClass('is-error');
+      $('#nickname_error').html(error);
     }
   });
 
