@@ -1,0 +1,86 @@
+* {
+  cursor: auto !important;
+}
+
+body {
+  text-align: center !important;
+  padding: 30px;
+  /*overflow: hidden;*/
+  width: 100vw;
+  height: 100vh;
+}
+
+.menu_button {
+  height: 100px;
+  width: 350px;
+  margin-top: 50px !important;
+}
+
+.responsive {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  width: auto;
+}
+
+#player_table{
+  width: 100%;
+}
+
+#player_list {
+  margin-top: 30px;
+  padding: 0;
+  overflow: hidden;
+}
+
+#player_list_section {
+  width: 100%;
+}
+
+#play_button {
+  margin: 40px;
+  width: 80px;
+}
+
+#controller {
+  display: none;
+}
+
+#scores {
+  text-align: left !important;
+}
+
+#controller {
+  position: fixed;
+  bottom: 5px;
+  left: 0px;
+  right: 0px;
+}
+
+.controller_lr {
+  font-size: 25px;
+  width: 100%;
+  height: 170px;
+  margin-top: 20px !important;
+}
+
+.controller_ud {
+  width: 100%;
+  height: 75px;
+  margin-top: 20px !important;
+}
+
+@media screen and (max-width: 768px) {
+  #host_button {
+    width:100%;
+  }
+
+  #join_button {
+    width:100%;
+  }
+
+  .ok_button {
+    width: 100%;
+  }
+
+}
