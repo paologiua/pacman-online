@@ -4,14 +4,15 @@ const UP = 2;
 const DOWN = 3;
 
 class Player {
-    constructor(pos_x, pos_y, role) {
+    constructor(pos_x, pos_y, direction = LEFT, role) {
         this.pos = {
             'x' : pos_x,
             'y' : pos_y
         }
-        this.direction = LEFT;
+        this.direction = direction;
         this.next_direction = null;
         this.n_movements = 0;
+        this.points = 0;
         
         if(role === undefined)
             this.role = Math.round(Math.random()) === 1 ? 'ghost' : 'pacman';
@@ -37,34 +38,30 @@ class Player {
         }
     }
 
+    increasePoints(n) {
+        this.points += n;
+    }
+
     updateDirection(map) {
         let update = false;
-        if(this.pos['y'] !== ~~this.pos['y'] || this.pos['x'] !== ~~this.pos['x'])
-            return;
+        //if(this.pos['y'] !== ~~this.pos['y'] || this.pos['x'] !== ~~this.pos['x'])
+        //    return;
 
         switch(this.next_direction) {
             case LEFT: 
-                if(map.matrix[this.pos['y']][~~(this.pos['x'] - 0.1)] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y']][~~(this.pos['x'] - 0.1)] === 15) )
+                if(!this.isAnObstacle(map.matrix[this.pos['y']][~~(this.pos['x'] - 0.1)]))
                     update = true;
                 break;
             case RIGHT: 
-                if(map.matrix[this.pos['y']][~~(this.pos['x'] + 1)] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y']][~~(this.pos['x'] + 1)] === 15) ) 
+                if(!this.isAnObstacle(map.matrix[this.pos['y']][~~(this.pos['x'] + 1)]))
                     update = true;
                 break;
             case UP: 
-                if(map.matrix[~~(this.pos['y'] - 0.1)][this.pos['x']] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[~~(this.pos['y'] - 0.1)][this.pos['x']] === 15) )
+                if(!this.isAnObstacle(map.matrix[~~(this.pos['y'] - 0.1)][this.pos['x']]))
                     update = true;
                 break;
             case DOWN: 
-                if(map.matrix[~~(this.pos['y'] + 1)][this.pos['x']] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[~~(this.pos['y'] + 1)][this.pos['x']] === 15) )
+                if(!this.isAnObstacle(map.matrix[~~(this.pos['y'] + 1)][this.pos['x']]) )
                     update = true;
                 break;
             default:
@@ -75,6 +72,12 @@ class Player {
             this.direction = this.next_direction;
             this.next_direction = null;
         }
+    }
+
+    isAnObstacle(x) {
+        if(x >= 1 && x <= 14)
+            return true;
+        return false
     }
 
     move(map) {
@@ -96,9 +99,7 @@ class Player {
 
     moveRight(map) {
         if(map.matrix[this.pos['y']][this.pos['x'] + 1] === undefined ||
-            map.matrix[this.pos['y']][this.pos['x'] + 1] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y']][this.pos['x'] + 1] === 15) ) {
+            !this.isAnObstacle(map.matrix[this.pos['y']][this.pos['x'] + 1])) {
             this.pos['x']++;
         }
 
@@ -108,9 +109,7 @@ class Player {
 
     moveLeft(map) {
         if(map.matrix[this.pos['y']][this.pos['x'] - 1] === undefined ||
-            map.matrix[this.pos['y']][this.pos['x'] - 1] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y']][this.pos['x'] - 1] === 15) ) {
+            !this.isAnObstacle(map.matrix[this.pos['y']][this.pos['x'] - 1])) {
             this.pos['x']--;
         }
 
@@ -119,17 +118,13 @@ class Player {
     }
 
     moveUp(map) {
-        if(map.matrix[~~(this.pos['y'] - 1)][this.pos['x']] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y'] - 1][this.pos['x']] === 15) ) {
+        if(!this.isAnObstacle(map.matrix[~~(this.pos['y'] - 1)][this.pos['x']])) {
             this.pos['y']--;
         }
     }
 
     moveDown(map) {
-        if(map.matrix[this.pos['y'] + 1][this.pos['x']] === 0 ||
-                        (this.role === 'ghost' && 
-                        map.matrix[this.pos['y'] + 1][this.pos['x']] === 15) ) {
+        if(!this.isAnObstacle(map.matrix[this.pos['y'] + 1][this.pos['x']])) {
             this.pos['y']++;
         }
     }

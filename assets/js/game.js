@@ -45,7 +45,7 @@ import { PacMan, Ghost } from './figure.js';
 
   let play_button = $('#play_button');
 
-  let canvas = $('#screen');
+  let canvas = $('#canvas');
 
   host_button.click(function () {
     createNewGame();
@@ -102,7 +102,7 @@ import { PacMan, Ghost } from './figure.js';
     player_list_page.css("display", "inline-block");
     $('#game_number').html(game_number);
 
-    socket.on(game_number + ' running', function (map_matrix) {
+    socket.on('running', function (map_matrix) {
       hideListPlayerPage();
       showCanvas();
       startGame(map_matrix);
@@ -201,11 +201,51 @@ import { PacMan, Ghost } from './figure.js';
     ctx.fillRect(0, 0, 27, 23);
   }
 
+  function getPoints(data) {
+    let content = '<table>';
+    for(let key in data.obj) {
+      let user = data.obj[key];
+      let img = '';
+      switch(user.player.color) {
+        case 'red':  
+          img += '<img src="assets/img/ghost/blinky_1.png" style="margin-bottom:5px"> ';
+          break;
+        case 'yellow': 
+          img += '<img src="assets/img/ghost/clyde_1.png" style="margin-bottom:5px"> ';
+          break;
+        case 'green':
+          img += '<img src="assets/img/ghost/inky_1.png" style="margin-bottom:5px"> ';
+          break;
+        case 'pink':
+          img += '<img src="assets/img/ghost/pinky_1.png" style="margin-bottom:5px"> ';
+          break;
+        default:
+          img += '<img src="assets/img/pacman/pacman_2r.png" style="margin-bottom:5px"> ';
+          break;
+      }
+
+      if(user.nickname !== nickname_val) {
+        content += '<tr>' +
+                      '<td>' + 
+                        img + user.nickname + ':' + 
+                      '<td/>' + 
+                      '<td style="width: 50px;">' +
+                         user.player.points + 
+                      '</td>' +
+                    '</tr> ';
+      } else {
+        $('#your_points').html('<h2>' + img + user.nickname + ': ' + user.player.points + '<br></h2>')
+      }
+    }
+    content += '</table>';
+    $('#points').html(content);
+  }
+
   function startGame(map_matrix) {
     socket.emit('new player');
     
-    const screen = document.getElementById('screen');
-    const ctx = screen.getContext('2d');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
     const SCALE_F = 30;
 
     ctx.scale(SCALE_F, SCALE_F);
@@ -270,11 +310,13 @@ import { PacMan, Ghost } from './figure.js';
     var old_participants = null;
     var timeServer = null;
     var cont = 0;
-    socket.on('state ' + game_number, function (locations) {
+    socket.on('state', function (locations) {
       old_participants = participants;
       timeServer = (timeServer + locations.time) / 2;
       participants = locations.obj;
       cont = 0;
+
+      getPoints(locations);
     });
 
     socket.on('player out', function (id) {
@@ -294,7 +336,6 @@ import { PacMan, Ghost } from './figure.js';
 
       let time = timeServer / timeClient;
       if(cont <= time) {
-        map.printDoor(ctx);
         for (var id in participants) {
           var player = participants[id].player;
           console.log(player)
@@ -322,6 +363,8 @@ import { PacMan, Ghost } from './figure.js';
           pacman[id].direction = player.direction;
           pacman[id].updateImg();
         }
+
+        map.printDoor(ctx);
 
         for (var id in participants) {
           pacman[id].print(ctx);

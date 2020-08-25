@@ -26,7 +26,7 @@ server.listen(5000, function () {
   console.log('Starting server on port 5000');
 });
 
-var map = new Map;
+//var map = new Map;
 var games = new Games;
 
 io.on('connection', function (socket) {
@@ -60,7 +60,8 @@ io.on('connection', function (socket) {
 
   socket.on('start game', function (game_number) {
     games.setGameStarted(game_number, true);
-    io.to(game_number).emit(game_number + ' running', map.matrix);
+    games.get(game_number).map = new Map;
+    io.to(game_number).emit('running', games.get(game_number).map.matrix);
   });
 
   socket.on('new player', function () {
@@ -103,8 +104,9 @@ io.on('connection', function (socket) {
   }); 
 });
 
-var lastUpdateTime = (new Date()).getTime();
 const INTERVAL = 150;
+
+var lastUpdateTime = (new Date()).getTime();
 setInterval(function () {
   var currentTime = (new Date()).getTime();
   var timeDifference = currentTime - lastUpdateTime;
@@ -114,11 +116,12 @@ setInterval(function () {
     for(let key in participants) {
       player = participants[key].player;
       if(player) {
-        player.updateDirection(map);
-        player.move(map);
+        player.updateDirection(games.get(game_number).map);
+        player.move(games.get(game_number).map);
       }
     }
-    io.to(game_number).emit('state ' + game_number, { obj: participants, time: timeDifference});
+    games.game_session[game_number].updateGameProgress();
+    io.to(game_number).emit('state', { obj: participants, time: timeDifference});
   }
   lastUpdateTime = currentTime;
 }, INTERVAL);

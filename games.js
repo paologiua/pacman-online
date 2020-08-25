@@ -130,6 +130,32 @@ class GameSession {
         this.number = number;
         this.participants = {};
         this.started = false;
+        this.map = null;
+        this.game_name = 'catch the pellets';
+    }
+
+    updateGameProgress() {
+        if(this.started) {
+            switch(this.game_name) {
+                case 'catch the pellets':
+                    this.catchThePellets();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    catchThePellets() {
+        for(let key in this.participants) {
+            let user = this.participants[key];
+            if(user.player) {
+                if(this.map.matrix[user.player.pos.y][user.player.pos.x] === 20) {
+                    this.map.matrix[user.player.pos.y][user.player.pos.x] = 0;
+                    user.player.increasePoints(1);
+                }
+            }
+        }
     }
 
     setStarted(started) {

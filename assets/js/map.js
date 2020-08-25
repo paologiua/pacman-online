@@ -44,6 +44,13 @@ class Map {
         this.img[13].src = 'assets/img/map/13.png';
         this.img[14] = new Image;
         this.img[14].src = 'assets/img/map/14.png';
+
+        this.img[20] = new Image;
+        this.img[20].src = 'assets/img/map/20.png';
+        this.img[30] = new Image;
+        this.img[30].src = 'assets/img/map/30.png';
+        this.img[40] = new Image;
+        this.img[40].src = 'assets/img/map/40.png';
     }
 
     setMatrix(matrix) { this.matrix = matrix; }
@@ -63,7 +70,7 @@ class Map {
 
             this.printDoor(ctx);
         }
-        else if(this.matrix[i][j] !== 0) {
+        else if(this.matrix[i][j] >= 1) {
             this.img[this.matrix[i][j]].onload = () => {
                 ctx.drawImage(this.img[this.matrix[i][j]], j, i, 1, 1);
             }
