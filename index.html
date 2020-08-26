@@ -82,20 +82,33 @@
         <div class="row">
             <div class="col-md-2 col-lg-2"></div>
             <div class="col-xs-12 col-md-8 col-lg-8">
-                <div style="height: 100px; position: relative;">
-                    <div style=" text-align: left; display: inline-block; position:absolute; bottom: 0; left: 0;" >
-                        <span id="your_points" class="nes-text is-disabled" style="display: inline-block;"></span>
+                <div id="scoreboard">
+                    <div class="score score_left">
+                        <span id="my_score" class="nes-text is-disabled inline_block"></span>
                     </div>
 
-                    <div style=" text-align: right; display: inline-block; position:absolute; bottom: 0; right: 0;" >
-                        <span id="points" class="nes-text is-disabled"style="display: inline-block;"></span><br>
+                    <div class="score score_right no_mobile">
+                        <span class="nes-text is-disabled inline_block other_scores"></span><br>
                     </div>
                 </div>
             </div>    
             <div class="col-md-2 col-lg-2"></div>
         </div>
     </div>
+
     <canvas id="canvas" width="810" height="690" class="responsive" style="display:none;"></canvas>
+    
+    <div class="container mobile" style="display:none;">
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="score-mobile">
+                    <div class="score top score_right">
+                        <span class="nes-text is-disabled other_scores inline_block"></span><br>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
 
     <div id="controller" class="container">
         <div class="row">
@@ -115,6 +128,7 @@
     
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <script src="assets/js/swiped-events.min.js"></script>
     <script src="assets/js/game.js" type="module"></script>
     
 </body>

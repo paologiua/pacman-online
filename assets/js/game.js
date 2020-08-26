@@ -165,7 +165,7 @@ import { PacMan, Ghost } from './figure.js';
       $('#nickname_error').html(error);
     }
   });
-
+/*
   function setController(movement) {
     if(screen.width <= 768) { //&& window.innerWidth <= 768) {
       //if(window.innerWidth <= 768) {
@@ -195,32 +195,67 @@ import { PacMan, Ghost } from './figure.js';
       });
     }
   }
+*/
+  function setSwipe(movement) {
+    document.addEventListener('swiped-left', function(e) {
+      console.log(e.target); // the element that was swiped
+      movement.left = true;
+      socket.emit('movement', movement);
+      movement.left = false;
+    });
+    
+    document.addEventListener('swiped-right', function(e) {
+      console.log(e.target); // the element that was swiped
+      movement.right = true;
+      socket.emit('movement', movement);
+      movement.right = false;
+    });
+    
+    document.addEventListener('swiped-up', function(e) {
+      console.log(e.target); // the element that was swiped
+      movement.up = true;
+      socket.emit('movement', movement);
+      movement.up = false;
+    });
+    
+    document.addEventListener('swiped-down', function(e) {
+      console.log(e.target); // the element that was swiped
+      movement.down = true;
+      socket.emit('movement', movement);
+      movement.down = false;
+    });
+
+  }
 
   function printBackground(ctx) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 27, 23);
   }
 
-  function getPoints(data) {
+  var get_scores = true;
+
+  function getScores(data) {
     let content = '<table>';
     for(let key in data.obj) {
       let user = data.obj[key];
-      let img = '';
+
+      let img = '<img ' + (user.nickname !== nickname_val ? '' : 'class="my_user_img" ');
+
       switch(user.player.color) {
         case 'red':  
-          img += '<img src="assets/img/ghost/blinky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/blinky_1.png" style="margin-bottom:5px"> ';
           break;
         case 'yellow': 
-          img += '<img src="assets/img/ghost/clyde_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/clyde_1.png" style="margin-bottom:5px"> ';
           break;
         case 'green':
-          img += '<img src="assets/img/ghost/inky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/inky_1.png" style="margin-bottom:5px"> ';
           break;
         case 'pink':
-          img += '<img src="assets/img/ghost/pinky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/pinky_1.png" style="margin-bottom:5px"> ';
           break;
         default:
-          img += '<img src="assets/img/pacman/pacman_2r.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/pacman/pacman_2r.png" style="margin-bottom:5px"> ';
           break;
       }
 
@@ -229,16 +264,24 @@ import { PacMan, Ghost } from './figure.js';
                       '<td>' + 
                         img + user.nickname + ':' + 
                       '<td/>' + 
-                      '<td style="width: 50px;">' +
+                      '<td class="score_' + user.nickname + '" style="width: 50px;">' +
                          user.player.points + 
                       '</td>' +
                     '</tr> ';
       } else {
-        $('#your_points').html('<h2>' + img + user.nickname + ': ' + user.player.points + '<br></h2>')
+        $('#my_score').html('<h2>' + img + user.nickname + ': <span class="score_' + user.nickname + '">' + user.player.points + '</span><br></h2>')
       }
     }
     content += '</table>';
-    $('#points').html(content);
+    $('.other_scores').html(content);
+    console.log(content);
+  }
+
+  function updateScores(data) {
+    for(let key in data.obj) {
+      let user = data.obj[key];
+      $('.score_' + user.nickname).html(user.player.points);
+    }
   }
 
   function startGame(map_matrix) {
@@ -263,7 +306,9 @@ import { PacMan, Ghost } from './figure.js';
 
     var last_key = null;
 
-    setController(movement);
+    //setController(movement);
+    //window.onbeforeunload = function () {return false;}
+    setSwipe(movement);
 
     document.addEventListener('keydown', function (event) {
       switch (event.keyCode) {
@@ -316,15 +361,21 @@ import { PacMan, Ghost } from './figure.js';
       participants = locations.obj;
       cont = 0;
 
-      getPoints(locations);
+      if(get_scores) {
+        getScores(locations);
+        get_scores = false;
+      } else {
+        updateScores(locations);
+      }
     });
 
     socket.on('player out', function (id) {
-      pacman[id].clear(ctx);
-      delete pacman[id];
+      get_scores = true;
+      figure[id].clear(ctx);
+      delete figure[id];
     });
 
-    var pacman = {} 
+    var figure = {} 
 
     var lastUpdateTime = (new Date()).getTime();
     var timeClient = -1
@@ -340,14 +391,14 @@ import { PacMan, Ghost } from './figure.js';
           var player = participants[id].player;
           console.log(player)
 
-          if(pacman[id] == undefined) {
+          if(figure[id] == undefined) {
             if(player.role === 'pacman')
-              pacman[id] = new PacMan(player.pos.x, player.pos.y);
+              figure[id] = new PacMan(player.pos.x, player.pos.y);
             else
-              pacman[id] = new Ghost(player.pos.x, player.pos.y, player.color);
+              figure[id] = new Ghost(player.pos.x, player.pos.y, player.color);
           }
 
-          pacman[id].clear(ctx)
+          figure[id].clear(ctx)
 
           let starting_position = ( old_participants !== null ? old_participants[id].player.pos : player.pos );
           let end_position = player.pos;
@@ -359,15 +410,15 @@ import { PacMan, Ghost } from './figure.js';
             delta_x = 0;
 
           console.log(cont)
-          pacman[id].updatePosition(starting_position.x + (delta_x * cont) / time, starting_position.y + (delta_y * cont) / time);
-          pacman[id].direction = player.direction;
-          pacman[id].updateImg();
+          figure[id].updatePosition(starting_position.x + (delta_x * cont) / time, starting_position.y + (delta_y * cont) / time);
+          figure[id].direction = player.direction;
+          figure[id].updateImg();
         }
 
         map.printDoor(ctx);
 
         for (var id in participants) {
-          pacman[id].print(ctx);
+          figure[id].print(ctx);
         }
         cont++;
       }

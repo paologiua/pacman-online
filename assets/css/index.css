@@ -2,8 +2,17 @@
   cursor: auto !important;
 }
 
+html,
 body {
-  background:black !important;
+    overscroll-behavior-y: contain;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: black !important;
   text-align: center !important;
   padding: 30px;
   /*overflow: hidden;*/
@@ -22,7 +31,7 @@ body {
   width: auto;
 }
 
-#player_table{
+#player_table {
   width: 100%;
 }
 
@@ -69,23 +78,68 @@ body {
   margin-top: 20px !important;
 }
 
+#scoreboard {
+  height: 100px;
+  position: relative;
+}
+
+.score {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+}
+
+.top {
+  top: 0 !important;
+}
+
+.score_left {
+  text-align: left;
+  left: 0;
+}
+
+.score_right {
+  text-align: right !important;
+  right: 0 !important;
+}
+
+.inline_block {
+  display: inline-block;
+}
+
+.my_user_img {
+  height: 30px;
+  width: auto;
+}
+
 @media screen and (min-width: 768px) {
   body {
-    width: 100vw;
-    height: 100vh;
+    position: absolute;
+    top: 0;
+    bottom: 90px;
+    right: 0;
+    left: 0;
   }
 }
 
 @media screen and (max-width: 768px) {
   #host_button {
-    width:100%;
+    width: 100%;
   }
-
   #join_button {
-    width:100%;
+    width: 100%;
   }
-
   .ok_button {
     width: 100%;
+  }
+  .mobile {
+    display: inline-block !important;
+  }
+  .no_mobile {
+    display: none;
+  }
+  #score-mobile {
+    position: relative;
+    width: 80vw;
   }
 }
