@@ -121,6 +121,10 @@ setInterval(function () {
       }
     }
     games.game_session[game_number].updateGameProgress();
+    if(games.game_session[game_number].endGameCheck()) {
+      io.to(game_number).emit('end game', games.game_session[game_number].getWinningUser());
+      games.remove(game_number);
+    }
     io.to(game_number).emit('state', { obj: participants, time: timeDifference});
   }
   lastUpdateTime = currentTime;

@@ -132,6 +132,7 @@ class GameSession {
         this.started = false;
         this.map = null;
         this.game_name = 'catch the pellets';
+        this.num_pellets = 218;
     }
 
     updateGameProgress() {
@@ -153,9 +154,24 @@ class GameSession {
                 if(this.map.matrix[user.player.pos.y][user.player.pos.x] === 20) {
                     this.map.matrix[user.player.pos.y][user.player.pos.x] = 0;
                     user.player.increasePoints(1);
+                    this.num_pellets--;
                 }
             }
         }
+    }
+
+    endGameCheck() {
+        return !(this.num_pellets);
+    }
+
+    getWinningUser() {
+        let winning_user = this.participants[Object.keys(this.participants)[0]];
+        for(let key in this.participants) {
+            let user = this.participants[key];
+            if(user.player.points > winning_user.player.points)
+                winning_user = user;
+        } 
+        return winning_user;
     }
 
     setStarted(started) {

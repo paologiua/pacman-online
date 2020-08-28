@@ -287,23 +287,23 @@ import { PacMan, Ghost } from './figure.js';
     for(let key in data.obj) {
       let user = data.obj[key];
 
-      let img = '<img ' + (user.nickname !== nickname_val ? '' : 'class="my_user_img" ');
+      let img = '<img ' + (user.nickname !== nickname_val ? 'class="user_img"' : 'class="user_img my_user_img" ');
 
       switch(user.player.color) {
         case 'red':  
-          img += 'src="assets/img/ghost/blinky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/blinky_1.png"> ';
           break;
         case 'yellow': 
-          img += 'src="assets/img/ghost/clyde_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/clyde_1.png"> ';
           break;
         case 'green':
-          img += 'src="assets/img/ghost/inky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/inky_1.png"> ';
           break;
         case 'pink':
-          img += 'src="assets/img/ghost/pinky_1.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/ghost/pinky_1.png"> ';
           break;
         default:
-          img += 'src="assets/img/pacman/pacman_2r.png" style="margin-bottom:5px"> ';
+          img += 'src="assets/img/pacman/pacman_2r.png"> ';
           break;
       }
 
@@ -356,7 +356,7 @@ import { PacMan, Ghost } from './figure.js';
     //setController(movement);
     setSwipe(movement);
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', function (event) { 
       switch (event.keyCode) {
         case 37: // A
           movement.left = true;
@@ -378,7 +378,7 @@ import { PacMan, Ghost } from './figure.js';
         }
     });
 
-    document.addEventListener('keyup', function (event) {
+    document.addEventListener('keyup', function (event) { console.log("Dentro")
       switch (event.keyCode) {
         case 37: // A 65
           movement.left = false;
@@ -406,7 +406,7 @@ import { PacMan, Ghost } from './figure.js';
     var cont = 0;
     socket.on('state', function (locations) {
       old_participants = participants;
-      timeServer = (timeServer + locations.time) / 2;
+      timeServer = (timeServer === null ? locations.time : (timeServer + locations.time) / 2); //(timeServer + locations.time) / 2; 
       participants = locations.obj;
       cont = 0;
 
@@ -419,8 +419,9 @@ import { PacMan, Ghost } from './figure.js';
         
       }
       for (var id in participants) {
+        if(id in figure)
           figure[id].print(ctx);
-        }
+      }
 
       figuresToBeDeleted.forEach(function (id, index) {
         if(!(id in figuresToBeDeleted)) {
@@ -444,13 +445,18 @@ import { PacMan, Ghost } from './figure.js';
       figuresToBeDeleted.push(id);
     });
 
+    socket.on('end game', function(data) {
+      $('#winner').html(data.nickname);
+      $('#win').css("display", "inline-block");
+    });
+
     var lastUpdateTime = (new Date()).getTime();
     var timeClient = -1
     setInterval(function () {
       var currentTime = (new Date()).getTime();
       var timeDifference = currentTime - lastUpdateTime;
 
-      timeClient = timeClient === -1 ? timeDifference : (timeClient + timeDifference) / 2;
+      timeClient = (timeClient === -1 ? timeDifference : (timeClient + timeDifference) / 2);
 
       let time = timeServer / timeClient;
       if(cont <= time) {

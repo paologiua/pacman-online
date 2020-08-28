@@ -18,7 +18,7 @@
                 <div id="menu_page">
                     <img src="assets/img/pacman_logo.png" class="responsive" width="700px"><br>
                     <span class="nes-text is-primary"><h2>Online</h2></span>
-                    <button id="host_button" type="button" class="nes-btn is-warning menu_button"><h2>Host new game</h2></button><br>
+                    <button id="host_button" type="button" class="nes-btn is-warning menu_button"><h2>New game</h2></button><br>
                     <button id="join_button" type="button" class="nes-btn is-success menu_button"><h3>Join game</h3></button><br>
                 </div>
 
@@ -113,6 +113,19 @@
     <span id="swipe_info" class="nes-text is-disabled inline_block" style="display:none;">
         Swipe left, right, up and down to move
     </span>
+
+    <div id="win" style="display:none;">
+        <div class="centered_card">
+            <section class="nes-container is-dark member-card win_section">
+                <div>
+                    <span class="nes-text is-success inline_block">
+                        <h1><span id="winner"></span> wins</h1>
+                        <button id="win_button" type="button" class="nes-btn is-success" onclick="location.reload();"><h3>New game</h3></button>
+                    </span>
+                </div>
+            </section>
+        </div>
+    </div>
 
     <!--
     <div id="controller" class="container">
