@@ -46,6 +46,7 @@ import { PacMan, Ghost } from './figure.js';
   let play_button = $('#play_button');
 
   let canvas = $('#canvas');
+  let swipe_info = $('#swipe_info');
 
   host_button.click(function () {
     createNewGame();
@@ -65,13 +66,27 @@ import { PacMan, Ghost } from './figure.js';
   }
 
   function showNicknamePage() {
-    nickname_button.click(function() {
+    $(document).off();
+
+    function send() {
       nickname_val = dark_nickname_field.val();
       console.log(nickname_val);
       checkNickname();
+    }
+
+    nickname_button.click(function() {
+      send();
     });
+
+    $(document).on('keypress',function(e) {
+      if(e.which == 13) {
+        send();
+      }
+    });
+
     dark_nickname_field.val('');
     nickname_page.css("display", "inline-block");
+    dark_nickname_field.focus();
   }
 
   function hideNicknamePage() {
@@ -80,13 +95,25 @@ import { PacMan, Ghost } from './figure.js';
   }
 
   function showGameNumberPage() {
-    game_number_button.click(function() {
+    function send() {
       game_number = dark_game_number_field.val();
       console.log(game_number);
       checkGameNumber();
+    }
+
+    game_number_button.click(function() {
+      send();
     });
+
+    $(document).on('keypress',function(e) {
+      if(e.which == 13) {
+        send();
+      }
+    });
+
     dark_game_number_field.val('');
     game_number_page.css("display", "inline-block");
+    dark_game_number_field.focus();
   }
 
   function hideGameNumberPage() {
@@ -95,6 +122,7 @@ import { PacMan, Ghost } from './figure.js';
   }
 
   function showListPlayerPage() {
+    $(document).off();
     play_button.click(function() {
       socket.emit('start game', game_number);
     });
@@ -116,14 +144,34 @@ import { PacMan, Ghost } from './figure.js';
 
   function showCanvas() {
     canvas.css("display", "inline-block");
+    swipe_info.addClass('mobile');
+  }
+
+  function disablePlayButton() {
+    play_button.prop('disabled', true);
+    play_button.removeClass('is-success');
+    play_button.addClass('is-disabled');
+  }
+
+  function enablePlayButton() {
+    play_button.prop('disabled', false);
+    play_button.removeClass('is-disabled');
+    play_button.addClass('is-success');
   }
 
   socket.on('connected users', function(data) {
     if(data.game_number === game_number) {
       let i = 1;
-      for(let key in data.participants)
-        $('#pl' + i++).html(data.participants[key].nickname ? data.participants[key].nickname : '...');
+      enablePlayButton();
+      for(let key in data.participants) {
+        if(data.participants[key].nickname)
+          $('#pl' + i++).html(data.participants[key].nickname);
+        else {
+          disablePlayButton();
+          $('#pl' + i++).html('...');
+        }
       
+      }
       while(i <= 4)
         $('#pl' + i++).html('');
     } 
@@ -274,7 +322,6 @@ import { PacMan, Ghost } from './figure.js';
     }
     content += '</table>';
     $('.other_scores').html(content);
-    console.log(content);
   }
 
   function updateScores(data) {
@@ -307,7 +354,6 @@ import { PacMan, Ghost } from './figure.js';
     var last_key = null;
 
     //setController(movement);
-    //window.onbeforeunload = function () {return false;}
     setSwipe(movement);
 
     document.addEventListener('keydown', function (event) {
@@ -351,6 +397,9 @@ import { PacMan, Ghost } from './figure.js';
       last_key = event.keyCode; 
     });
 
+    var figure = {};
+    var figuresToBeDeleted = [];
+
     var participants = null;
     var old_participants = null;
     var timeServer = null;
@@ -360,6 +409,27 @@ import { PacMan, Ghost } from './figure.js';
       timeServer = (timeServer + locations.time) / 2;
       participants = locations.obj;
       cont = 0;
+
+      for (var id in old_participants) {
+        var old_player = old_participants[id].player;
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(Number((~~old_player.pos.x - 0.1).toFixed(2)), Number((~~old_player.pos.y - 0.1).toFixed(2)), 1.2, 1.2);
+        ctx.fillRect(Number((old_player.pos.x - 0.1).toFixed(2)), Number((old_player.pos.y - 0.1).toFixed(2)), 1.2, 1.2);
+        
+      }
+      for (var id in participants) {
+          figure[id].print(ctx);
+        }
+
+      figuresToBeDeleted.forEach(function (id, index) {
+        if(!(id in figuresToBeDeleted)) {
+          figure[id].clear(ctx);
+          delete figure[id];
+          figuresToBeDeleted.splice(index, 1);
+        }
+      });
+      
 
       if(get_scores) {
         getScores(locations);
@@ -371,11 +441,8 @@ import { PacMan, Ghost } from './figure.js';
 
     socket.on('player out', function (id) {
       get_scores = true;
-      figure[id].clear(ctx);
-      delete figure[id];
+      figuresToBeDeleted.push(id);
     });
-
-    var figure = {} 
 
     var lastUpdateTime = (new Date()).getTime();
     var timeClient = -1
@@ -389,7 +456,7 @@ import { PacMan, Ghost } from './figure.js';
       if(cont <= time) {
         for (var id in participants) {
           var player = participants[id].player;
-          console.log(player)
+          //console.log(player)
 
           if(figure[id] == undefined) {
             if(player.role === 'pacman')
@@ -397,7 +464,7 @@ import { PacMan, Ghost } from './figure.js';
             else
               figure[id] = new Ghost(player.pos.x, player.pos.y, player.color);
           }
-
+          
           figure[id].clear(ctx)
 
           let starting_position = ( old_participants !== null ? old_participants[id].player.pos : player.pos );
@@ -409,7 +476,6 @@ import { PacMan, Ghost } from './figure.js';
           if(delta_x > map.matrix[0].length / 2 || -delta_x > map.matrix[0].length / 2)
             delta_x = 0;
 
-          console.log(cont)
           figure[id].updatePosition(starting_position.x + (delta_x * cont) / time, starting_position.y + (delta_y * cont) / time);
           figure[id].direction = player.direction;
           figure[id].updateImg();

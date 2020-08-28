@@ -25,7 +25,6 @@ class Figure {
     loadImg() {}
 
     updatePosition(pos_x, pos_y) {
-
         this.old_pos_x = this.pos_x;
         this.old_pos_y = this.pos_y;
 
@@ -41,11 +40,13 @@ class Figure {
     }
 
     updateImg() {}
-
-    clear(ctx) {
+    
+    clear(ctx) { 
         ctx.fillStyle = 'black';
-        ctx.fillRect(this.old_pos_x, this.old_pos_y, 1, 1);
-        ctx.fillRect(this.pos_x, this.pos_y, 1, 1);
+        ctx.fillRect(Number((~~this.old_pos_x - 0.1).toFixed(2)), Number((~~this.old_pos_y - 0.1).toFixed(2)), 1.2, 1.2);
+        ctx.fillRect(Number((this.old_pos_x - 0.1).toFixed(2)), Number((this.old_pos_y - 0.1).toFixed(2)), 1.2, 1.2);
+        ctx.fillRect(Number((~~this.pos_x - 0.1).toFixed(2)), Number((~~this.pos_y - 0.1).toFixed(2)), 1.2, 1.2);
+        ctx.fillRect(Number((this.pos_x - 0.1).toFixed(2)), Number((this.pos_y - 0.1).toFixed(2)), 1.2, 1.2);
     }
 }
 

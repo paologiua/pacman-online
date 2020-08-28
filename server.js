@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
   socket.on('new player', function () {
     let game_number = games.getUserGameNumber(socket.id);
     if(game_number) {
-      games.getUsersInAGameSession(game_number)[socket.id].play();
+      games.get(game_number).userPlays(socket.id);
       console.log('Player [', socket.id, '] in game');
     }
   });

@@ -183,7 +183,14 @@ class GameSession {
     has(socket_id) {
         return (socket_id in this.participants);
     }
+
+    userPlays(socket_id) {
+        if(this.has(socket_id)) {
+            this.participants[socket_id].plays(Object.keys(this.participants).indexOf(socket_id));
+        }
+    }
 }
+
 
 class User {
     constructor(socket_id) {
@@ -196,8 +203,8 @@ class User {
         this.nickname = nickname;
     }
 
-    play() {
-        this.player = new Player(13, 13);
+    plays(x) {
+        this.player = new Player(x);
     }
 }
 

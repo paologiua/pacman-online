@@ -57,7 +57,7 @@ body {
 #scores {
   text-align: left !important;
 }
-
+/*
 #controller {
   position: fixed;
   bottom: 5px;
@@ -77,7 +77,7 @@ body {
   height: 75px;
   margin-top: 20px !important;
 }
-
+*/
 #scoreboard {
   height: 100px;
   position: relative;
@@ -110,6 +110,13 @@ body {
 .my_user_img {
   height: 30px;
   width: auto;
+}
+
+#swipe_info {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
 }
 
 @media screen and (min-width: 768px) {

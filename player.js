@@ -3,38 +3,43 @@ const RIGHT = 1;
 const UP = 2;
 const DOWN = 3;
 
+const POSITIONS = [{ x: 10, y: 13}, { x: 16, y: 13}, { x: 10, y: 9}, { x: 16, y: 9}];
+const ROLES = ['pacman', 'ghost'];
+const COLORS = ['pink', 'red', 'yellow', 'green'];
+
 class Player {
-    constructor(pos_x, pos_y, direction = LEFT, role) {
+    constructor(x, pos_y, direction = LEFT, role, color) {
+        this.next_direction = null;
+        this.n_movements = 0;
+        this.points = 0;
+        if(pos_y)
+            this.normalConstruction(x, pos_y, direction, role, color);
+        else
+            this.buildWithDefaultSets(x);
+    }
+
+    buildWithDefaultSets(x) {
+        this.pos = { ...POSITIONS[x]};
+        this.direction = x % 2;
+        if(x === 0)
+            this.role = ROLES[0];
+        else {
+            this.role = ROLES[1];
+            this.color = COLORS[x];
+        }
+
+    }
+
+    normalConstruction(pos_x, pos_y, direction, role, color) {
         this.pos = {
             'x' : pos_x,
             'y' : pos_y
         }
         this.direction = direction;
-        this.next_direction = null;
-        this.n_movements = 0;
-        this.points = 0;
-        
-        if(role === undefined)
-            this.role = Math.round(Math.random()) === 1 ? 'ghost' : 'pacman';
-        else
-            this.role = role;
+        this.role = (role in ROLES ? role : ROLES[Math.round(Math.random())]);
 
         if(this.role === 'ghost') {
-            this.color = (~~(Math.random() * 10)) % 4;
-            switch(this.color) {
-                case 1: 
-                    this.color = 'yellow';
-                    break;
-                case 2: 
-                    this.color = 'green';
-                    break;
-                case 'pink': 
-                    this.color = 'pink';
-                    break;
-                default: 
-                    this.color = 'red';
-                    break;
-            }
+            this.color = (color in COLORS ? color : COLORS[~~(Math.random() * 3)]);
         }
     }
 
