@@ -26,7 +26,6 @@ server.listen(5000, function () {
   console.log('Starting server on port 5000');
 });
 
-//var map = new Map;
 var games = new Games;
 
 io.on('connection', function (socket) {
@@ -59,9 +58,11 @@ io.on('connection', function (socket) {
   });
 
   socket.on('start game', function (game_number) {
-    games.setGameStarted(game_number, true);
-    games.get(game_number).map = new Map;
-    io.to(game_number).emit('running', games.get(game_number).map.matrix);
+    if(!games.game_session[game_number].started) {
+      games.setGameStarted(game_number, true);
+      games.get(game_number).map = new Map;
+      io.to(game_number).emit('running', games.get(game_number).map.matrix);
+    }
   });
 
   socket.on('new player', function () {
@@ -112,20 +113,27 @@ setInterval(function () {
   var timeDifference = currentTime - lastUpdateTime;
   
   for(let game_number in games.game_session) {
-    let participants = games.getUsersInAGameSession(game_number);
-    for(let key in participants) {
-      player = participants[key].player;
-      if(player) {
-        player.updateDirection(games.get(game_number).map);
-        player.move(games.get(game_number).map);
+    if(games.game_session[game_number].started) {
+      let participants = games.getUsersInAGameSession(game_number);
+      for(let key in participants) {
+        player = participants[key].player;
+        if(player) {
+          player.updateDirection(games.get(game_number).map);
+          player.move(games.get(game_number).map);
+        }
       }
+      games.game_session[game_number].updateGameProgress();
+
+      let cherry = games.game_session[game_number].map.updateCherryTime(timeDifference);
+      if(cherry) 
+        io.to(game_number).emit('element', cherry);
+
+      if(games.game_session[game_number].endGameCheck()) {
+        io.to(game_number).emit('end game', games.game_session[game_number].getWinningUser());
+        games.remove(game_number);
+      }
+      io.to(game_number).emit('state', { obj: participants, time: timeDifference});
     }
-    games.game_session[game_number].updateGameProgress();
-    if(games.game_session[game_number].endGameCheck()) {
-      io.to(game_number).emit('end game', games.game_session[game_number].getWinningUser());
-      games.remove(game_number);
-    }
-    io.to(game_number).emit('state', { obj: participants, time: timeDifference});
   }
   lastUpdateTime = currentTime;
 }, INTERVAL);

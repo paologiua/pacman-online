@@ -24,6 +24,19 @@ const MAP_0 = [
     [6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7]
 ]
 
+const VOID = 0;
+const PELLET = 20;
+const POWER_PELLET = 30;
+const CHERRY = 40;
+
+const POSITIONS = [
+    { x: 25, y: 16}, { x: 16, y: 13}, { x: 1, y: 1}, 
+    { x: 10, y: 9},  { x: 23, y: 1},  { x: 16, y: 9}, 
+    { x: 13, y: 13}, { x: 4, y: 11},  { x: 10, y: 11}, 
+    { x: 22, y: 11}, { x: 16, y: 11}, { x: 1, y: 20}, 
+    { x: 10, y: 13}
+];
+
 function cloneMatrix(matrix) {
     let m = [];
     for(let i = 0; i < matrix.length; i++) 
@@ -33,6 +46,9 @@ function cloneMatrix(matrix) {
 
 class Map {
     constructor(n_map = 0) {
+        this.num_pellets = 218;
+        this.cherry_time = this.getCherryTime();
+        this. num_cherry = 5;
         switch(n_map) {
             case 0: 
                 this.matrix = cloneMatrix(MAP_0);
@@ -41,8 +57,73 @@ class Map {
                 break;
         }
     }
-}
 
+    setXY(x, y, el) {
+        this.matrix[y][x] = el;
+    }
+
+    setVoid(x, y) {
+        this.setXY(x, y, VOID);
+    }
+
+    switchPelletToVoid(x, y) {
+        if(this.isPellet(x, y)) {
+            this.num_pellets--;
+            this.setVoid(x, y);
+        }
+    }
+
+    isPellet(x, y) {
+        return (this.matrix[y][x] === PELLET);
+    }
+
+    isVoid(x, y) {
+        return (this.matrix[y][x] === VOID);
+    }
+
+    isCherry(x, y) {
+        return (this.matrix[y][x] === CHERRY);
+    }
+
+    setPellet(x, y) {
+        this.setXY(x, y, PELLET);
+    }
+
+    setPowerPellet(x, y) {
+        this.setXY(x, y, POWER_PELLET);
+    }
+
+    setCherry(x, y) {
+        this.setXY(x, y, CHERRY);
+    }
+
+    getCherryTime() {
+        return ~~(Math.random() * (30000 - 10000) + 10000);
+    }
+
+    updateCherryTime(time) {
+        if(this.num_cherry) {
+            this.cherry_time -= time;
+            if(this.cherry_time <= 0) {
+                this.cherry_time = this.getCherryTime();
+                return { pos: this.createCherry(), val: CHERRY};
+            }
+        }
+        return null;
+    }
+
+    createCherry() {
+        let index = ~~(Math.random() * (POSITIONS.length - 1));
+        let pos = { ...POSITIONS[index]};
+        while(!this.isVoid(pos.x, pos.y)) {
+            index = (index + 1) % POSITIONS.length;
+            pos = { ...POSITIONS[index]};
+        }
+        this.setCherry(pos.x, pos.y);
+        this.num_cherry--;
+        return pos;
+    }
+}
 
 module.exports = {
     Map: Map

@@ -132,7 +132,6 @@ class GameSession {
         this.started = false;
         this.map = null;
         this.game_name = 'catch the pellets';
-        this.num_pellets = 218;
     }
 
     updateGameProgress() {
@@ -151,17 +150,22 @@ class GameSession {
         for(let key in this.participants) {
             let user = this.participants[key];
             if(user.player) {
-                if(this.map.matrix[user.player.pos.y][user.player.pos.x] === 20) {
-                    this.map.matrix[user.player.pos.y][user.player.pos.x] = 0;
+                if(this.map.isPellet(user.player.pos.x, user.player.pos.y)) {
                     user.player.increasePoints(1);
-                    this.num_pellets--;
+                    this.map.switchPelletToVoid(user.player.pos.x, user.player.pos.y);
+                }
+                else if(this.map.isCherry(user.player.pos.x, user.player.pos.y)) {
+                    user.player.increasePoints(10);
+                    this.map.setVoid(user.player.pos.x, user.player.pos.y);
                 }
             }
         }
     }
 
     endGameCheck() {
-        return !(this.num_pellets);
+        if(!this.map)
+            return false;
+        return !(this.map.num_pellets);
     }
 
     getWinningUser() {

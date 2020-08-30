@@ -10,7 +10,6 @@ const COLORS = ['pink', 'red', 'yellow', 'green'];
 class Player {
     constructor(x, pos_y, direction = LEFT, role, color) {
         this.next_direction = null;
-        this.n_movements = 0;
         this.points = 0;
         if(pos_y)
             this.normalConstruction(x, pos_y, direction, role, color);
@@ -49,24 +48,22 @@ class Player {
 
     updateDirection(map) {
         let update = false;
-        //if(this.pos['y'] !== ~~this.pos['y'] || this.pos['x'] !== ~~this.pos['x'])
-        //    return;
 
         switch(this.next_direction) {
             case LEFT: 
-                if(!this.isAnObstacle(map.matrix[this.pos['y']][~~(this.pos['x'] - 0.1)]))
+                if(!this.isAnObstacle(map.matrix[this.pos['y']][this.pos['x'] - 1]))
                     update = true;
                 break;
             case RIGHT: 
-                if(!this.isAnObstacle(map.matrix[this.pos['y']][~~(this.pos['x'] + 1)]))
+                if(!this.isAnObstacle(map.matrix[this.pos['y']][this.pos['x'] + 1]))
                     update = true;
                 break;
             case UP: 
-                if(!this.isAnObstacle(map.matrix[~~(this.pos['y'] - 0.1)][this.pos['x']]))
+                if(!this.isAnObstacle(map.matrix[this.pos['y'] - 1][this.pos['x']]))
                     update = true;
                 break;
             case DOWN: 
-                if(!this.isAnObstacle(map.matrix[~~(this.pos['y'] + 1)][this.pos['x']]) )
+                if(!this.isAnObstacle(map.matrix[this.pos['y'] + 1][this.pos['x']]) )
                     update = true;
                 break;
             default:
