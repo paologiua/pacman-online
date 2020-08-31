@@ -35,7 +35,7 @@ ottenendo un indirizzo del tipo 192.168.x.x.
 
 E' quindi possibile visualizzare il client da un browser installato in un secondo host, andando all'indirizzo **192.168.x.x:5000**.
 ## Front-end
-In generale per il front-end sono stati utilizzati JavaScript, CSS e HTML. Inoltre Bootstrap è stato utile per implementare il sistema a colonne e NES.css per alcuni elementi grafici in stile retro-game.
+In generale per il front-end sono stati utilizzati JavaScript, CSS e HTML. Inoltre Bootstrap è stato utile per implementare il sistema a colonne, NES.css per alcuni elementi grafici in stile retro-game e JQuery per manipolare il DOM.
 #### Responsive
 Tutta l'interfaccia è stata pensata per essere pienamente funzionante su qualsiasi risoluzione. E' possibile giocare a pacman_online sia da computer, ma anche da dispositivi mobili, come smartphone e tablet.
 #### Smartphone:
