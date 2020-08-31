@@ -1,5 +1,8 @@
 let Player = require('./player').Player;
 
+/*
+* Questa classe gestisce, crea e rimuove tutte le sessioni di gioco 
+*/
 class Games {
     constructor() {
         this.game_session = {}
@@ -125,6 +128,10 @@ class Games {
     }
 }
 
+/*
+* Questa classe gestisce una singola sessione di gioco e 
+* gli utenti che ne fanno parte
+*/
 class GameSession {
     constructor(number) {
         this.number = number;
@@ -225,7 +232,9 @@ class GameSession {
     }
 }
 
-
+/*
+* la classe User rappresenta un utente che partecipa a una sessione di gioco
+*/
 class User {
     constructor(socket_id) {
         this.nickname = null;

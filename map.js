@@ -44,6 +44,10 @@ function cloneMatrix(matrix) {
     return m;
 }
 
+/*
+* La classe Map gestisce la struttura della Mappa e
+* presenta delle funzioni per poterla manipolare
+*/
 class Map {
     constructor(n_map = 0) {
         this.cherry_time = this.getCherryTime();

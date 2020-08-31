@@ -7,6 +7,9 @@ const POSITIONS = [{ x: 10, y: 13}, { x: 16, y: 13}, { x: 10, y: 9}, { x: 16, y:
 const ROLES = ['pacman', 'ghost'];
 const COLORS = ['pink', 'red', 'yellow', 'green'];
 
+/*
+* Classe che si occupa di gestire le movenze e l'aspetto dei giocatori
+*/
 class Player {
     constructor(x, pos_y, direction = LEFT, role, color) {
         this.next_direction = null;
