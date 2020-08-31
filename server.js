@@ -129,9 +129,10 @@ setInterval(function () {
         io.to(game_number).emit('element', cherry);
 
       if(games.game_session[game_number].endGameCheck()) {
-        io.to(game_number).emit('end game', games.game_session[game_number].getWinningUser());
+        io.to(game_number).emit('end game', games.game_session[game_number].getRanking());
         games.remove(game_number);
       }
+
       io.to(game_number).emit('state', { obj: participants, time: timeDifference});
     }
   }

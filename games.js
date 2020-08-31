@@ -178,6 +178,20 @@ class GameSession {
         return winning_user;
     }
 
+    getRanking() {
+        let sortScores = (a, b) => {
+            let user_a = this.participants[a];
+            let user_b = this.participants[b];
+            return user_b.player.points - user_a.player.points;
+        }
+
+        let ranking = []
+        Object.keys(this.participants).sort(sortScores).forEach((key) => {
+            ranking.push({ nickname: this.participants[key].nickname, score: this.participants[key].player.points });
+        });
+        return ranking;
+    }
+
     setStarted(started) {
         this.started = started;
     }

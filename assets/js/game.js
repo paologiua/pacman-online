@@ -469,7 +469,11 @@ import { PacMan, Ghost } from './figure.js';
     });
 
     socket.on('end game', function(data) {
-      $('#winner').html(data.nickname);
+      $('#winner').html(data[0].nickname);
+      for(let i = 0; i < data.length; i++) {
+        $('#player' + (i + 1)).html(data[i].nickname);
+        $('#score' + (i + 1)).html(data[i].score);
+      }
       $('#win').css("display", "inline-block");
     });
 

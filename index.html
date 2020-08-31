@@ -113,13 +113,66 @@
     <span id="swipe_info" class="nes-text is-disabled inline_block" style="display:none;">
         Swipe left, right, up and down to move
     </span>
+<!--
+    <div id="win" style="display:none;" >
+        <div class="centered_card" style="height: 400px;">
+            <section class="nes-container is-dark member-card win_section">
+                <div style="position: absolute; top: 70px">
+                    <span class="nes-text is-success inline_block">
+                        <h1><span id="winner"></span> wins</h1>
+                        <section class="nes-container is-dark member-card " style="background: #fff;">
+                            <div>
+                                <span class="nes-text is-success inline_block">
+                                    <h1>1. Paolo: 100</h1>
+                                    <h1>1. Paolo: 100</h1>
+                                    <h1>1. Paolo: 100</h1>
+                                    <h1>1. Paolo: 100</h1>
+                                </span>
+                            </div>
+                        </section>
+                        <button id="win_button" type="button" class="nes-btn is-success" onclick="location.reload();"><h3>New game</h3></button>
+                    </span>
+                </div>
+            </section>
+        </div>
+    </div>-->
+
 
     <div id="win" style="display:none;">
         <div class="centered_card">
             <section class="nes-container is-dark member-card win_section">
-                <div>
+                <div style="position: absolute; top: 80px">
                     <span class="nes-text is-success inline_block">
-                        <h1><span id="winner"></span> wins</h1>
+    
+                        <h1><span id="winner"></span> wins!</h1><br>
+                        <section id="ranking" class="nes-container is-dark member-card">
+                                <span class="nes-text is-success inline_block">
+                                    <table id="ranking_list">
+                                        <tbody>
+                                            <tr>
+                                                <td>1.</td>
+                                                <td id="player1">..</td>
+                                                <td id="score1">..</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2.</td>
+                                                <td id="player2">..</td>
+                                                <td id="score2">..</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3.</td>
+                                                <td id="player3">..</td>
+                                                <td id="score3">..</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4.</td>
+                                                <td id="player4">..</td>
+                                                <td id="score4">..</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </span>
+                        </section>
                         <button id="win_button" type="button" class="nes-btn is-success" onclick="location.reload();"><h3>New game</h3></button>
                     </span>
                 </div>
