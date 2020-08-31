@@ -39,9 +39,9 @@ In generale per il front-end sono stati utilizzati JavaScript, CSS e HTML. Inolt
 #### Responsive
 Tutta l'interfaccia è stata pensata per essere pienamente funzionante su qualsiasi risoluzione. E' possibile giocare a pacman_online sia da computer, ma anche da dispositivi mobili, come smartphone e tablet.
 #### Smartphone:
-![alt text](https://imgur.com/download/0Hc68Aq/) ![alt text](https://imgur.com/download/EcT8qXI/)
-
 ![alt text](assets/img/mobile_main_page.png) ![alt text](assets/img/mobile_game_page.png)
+#### PC:
+![alt text](assets/img/computer_main_page.png) ![alt text](assets/img/computer_game_page.png)
 ## Back-end
 Come già accennato, il back-end è basato su nodejs
 
