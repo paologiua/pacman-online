@@ -46,3 +46,6 @@ Tutta l'interfaccia è stata pensata per essere pienamente funzionante su qualsi
 Come già accennato, il back-end è basato su nodejs
 
 **Tutta la comunicazione tra client e server avviene sfruttando Socket.IO, una libreria Javascript per applicazioni web in tempo reale. Comprende una comunicazione bidirezionale realtime tra i web client e i server. È formata da due parti: una libreria lato client che gira sul browser e una libreria lato server per Node.js.**
+
+## Come avviare una nuova partita e giocare con gli amici
+Tramite il pulsante New Game è possibile creare una nuova partita. A questo punto sarà visibile un codice tramite il quale altri giocatori potranno accedere alla stessa partita e divertirsi insieme, cliccando il tasto Join Game.
