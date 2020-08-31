@@ -1,5 +1,9 @@
 export {Map};
 
+/*
+* La classe Map permette il caricamento, la visualizzazione e la manipolazione
+* della mappa di gioco
+*/
 class Map {
     constructor() {
         this.door_x = null;

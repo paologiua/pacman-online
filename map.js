@@ -46,12 +46,12 @@ function cloneMatrix(matrix) {
 
 class Map {
     constructor(n_map = 0) {
-        this.num_pellets = 218;
         this.cherry_time = this.getCherryTime();
-        this. num_cherry = 5;
+        this.num_cherry = 5;
         switch(n_map) {
             case 0: 
                 this.matrix = cloneMatrix(MAP_0);
+                this.num_pellets = 218;
                 break;
             default:
                 break;

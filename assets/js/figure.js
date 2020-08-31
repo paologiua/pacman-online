@@ -5,6 +5,9 @@ const RIGHT = 1;
 const UP = 2;
 const DOWN = 3;
 
+/*
+* La classe Figure gestisce la visualizzazione dei personaggi
+*/
 class Figure {
     constructor(pos_x, pos_y, direction = LEFT, color = null) {
         this.pos_x = pos_x;
@@ -50,6 +53,10 @@ class Figure {
     }
 }
 
+/*
+* PacMan è una classe che estende Figure ed è specifica per 
+* la visualizzazione del personaggio PacMan
+*/ 
 class PacMan extends Figure {
     constructor(pos_x, pos_y, direction = LEFT) {
         super(pos_x, pos_y, direction);
@@ -106,7 +113,10 @@ class PacMan extends Figure {
     }
 }
 
-
+/*
+* Ghost è una classe che estende Figure ed è specifica per 
+* la visualizzazione dei personaggi Ghost
+*/ 
 class Ghost extends Figure {
     constructor(pos_x, pos_y, color, direction = LEFT) {
         super(pos_x, pos_y, direction, color);

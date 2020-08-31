@@ -15,6 +15,7 @@
         <div class="row">
             <div class="col-md-2 col-lg-2"></div>
             <div class="col-xs-12 col-md-8 col-lg-8">
+                <!-- MAIN PAGE -->
                 <div id="menu_page">
                     <img src="assets/img/pacman_logo.png" class="responsive" width="700px"><br>
                     <span class="nes-text is-primary"><h2>Online</h2></span>
@@ -22,6 +23,7 @@
                     <button id="join_button" type="button" class="nes-btn is-success menu_button"><h3>Join game</h3></button><br>
                 </div>
 
+                <!-- NICKNAME SELECTION PAGE -->
                 <div id="nickname_page" style="display:none;">
                     <div style="background-color:#000; padding: 1rem;" class="nes-field is-inline">
                         <label for="dark_field" style="color:#fff;">Nickname</label>
@@ -31,6 +33,7 @@
                     <span id="nickname_error" class="nes-text is-error"></span>
                 </div>
 
+                <!-- GAME NUMBER SELECTION PAGE -->
                 <div id="game_number_page" style="display:none;">
                     <div style="background-color:#000; padding: 1rem;" class="nes-field is-inline">
                         <label for="dark_field" style="color:#fff;">n. Game</label>
@@ -40,6 +43,7 @@
                     <span id="game_number_error" class="nes-text is-error"></span>
                 </div>
                 
+                <!-- PLAYER LIST PAGE -->
                 <div id="player_list_page" style="display:none;">
                     <section id="player_list_section" class="nes-container is-dark member-card">
                         Game number: <span id="game_number"></span>
@@ -82,11 +86,14 @@
         <div class="row">
             <div class="col-md-2 col-lg-2"></div>
             <div class="col-xs-12 col-md-8 col-lg-8">
+                <!-- SCORES SECTION -->
                 <div id="scoreboard">
+                    <!-- VIEW OF THE PLAYER'S SCORE -->
                     <div class="score score_left">
                         <span id="my_score" class="nes-text is-disabled inline_block"></span>
                     </div>
 
+                    <!-- VIEW OF THE SCORE OF THE OTHER PLAYERS -->
                     <div class="score score_right no_mobile">
                         <span class="nes-text is-disabled inline_block other_scores"></span><br>
                     </div>
@@ -96,8 +103,10 @@
         </div>
     </div>
 
+    <!-- GAME SECTION -->
     <canvas id="canvas" width="810" height="690" class="responsive" style="display:none;"></canvas>
     
+    <!-- VIEW OF THE SCORE OF THE OTHER PLAYERS IN MOBILE -->
     <div class="container mobile" style="display:none;">
         <div class="row">
             <div class="col-xs-12">
@@ -110,41 +119,22 @@
         </div>
     </div>
 
+    <!-- INFORMATION SECTION ABOUT THE SWIPE -->
     <span id="swipe_info" class="nes-text is-disabled inline_block" style="display:none;">
         Swipe left, right, up and down to move
     </span>
-<!--
-    <div id="win" style="display:none;" >
-        <div class="centered_card" style="height: 400px;">
-            <section class="nes-container is-dark member-card win_section">
-                <div style="position: absolute; top: 70px">
-                    <span class="nes-text is-success inline_block">
-                        <h1><span id="winner"></span> wins</h1>
-                        <section class="nes-container is-dark member-card " style="background: #fff;">
-                            <div>
-                                <span class="nes-text is-success inline_block">
-                                    <h1>1. Paolo: 100</h1>
-                                    <h1>1. Paolo: 100</h1>
-                                    <h1>1. Paolo: 100</h1>
-                                    <h1>1. Paolo: 100</h1>
-                                </span>
-                            </div>
-                        </section>
-                        <button id="win_button" type="button" class="nes-btn is-success" onclick="location.reload();"><h3>New game</h3></button>
-                    </span>
-                </div>
-            </section>
-        </div>
-    </div>-->
 
-
+    <!-- END OF GAME CARD -->
     <div id="win" style="display:none;">
         <div class="centered_card">
             <section class="nes-container is-dark member-card win_section">
                 <div style="position: absolute; top: 80px">
                     <span class="nes-text is-success inline_block">
-    
+                        
+                        <!-- GAME WINNER SECTION -->
                         <h1><span id="winner"></span> wins!</h1><br>
+
+                        <!-- PLAYERS RANKING SECTION -->
                         <section id="ranking" class="nes-container is-dark member-card">
                                 <span class="nes-text is-success inline_block">
                                     <table id="ranking_list">
@@ -154,17 +144,17 @@
                                                 <td id="player1">..</td>
                                                 <td id="score1">..</td>
                                             </tr>
-                                            <tr>
+                                            <tr style="color: #f7d51d;">
                                                 <td>2.</td>
                                                 <td id="player2">..</td>
                                                 <td id="score2">..</td>
                                             </tr>
-                                            <tr>
+                                            <tr style="color: #e59400;">
                                                 <td>3.</td>
                                                 <td id="player3">..</td>
                                                 <td id="score3">..</td>
                                             </tr>
-                                            <tr>
+                                            <tr style="color: #ce372b;">
                                                 <td>4.</td>
                                                 <td id="player4">..</td>
                                                 <td id="score4">..</td>

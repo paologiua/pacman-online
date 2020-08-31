@@ -2,6 +2,7 @@ import { Map } from './map.js';
 import { PacMan, Ghost } from './figure.js';
 
 (() => {
+  // Oggetto che ci permette di comunicare col server
   var socket = io();
 
   socket.io.on('connect_error', function(err) {
@@ -12,6 +13,9 @@ import { PacMan, Ghost } from './figure.js';
 
   var map = new Map();
 
+  /*
+  * Fa in modo che il tasto indietro ricarichi la pagina
+  */
   (function(window, location) {
     history.replaceState(null, document.title, location.pathname+"#!/history");
     history.pushState(null, document.title, location.pathname);
@@ -26,6 +30,9 @@ import { PacMan, Ghost } from './figure.js';
     }, false);
   }(window, location));
 
+  /*
+  * Rileva se il dispositivo in uso ha uno schermo touch
+  */
   function isTouchDevice() {
     var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
     
@@ -43,6 +50,7 @@ import { PacMan, Ghost } from './figure.js';
   var nickname_val = null;
   var game_number = null;
 
+// Elementi DOM manipolati
   let $menu_page = $('#menu_page');
   let $host_button = $('#host_button');
   let $join_button = $('#join_button');
@@ -61,6 +69,7 @@ import { PacMan, Ghost } from './figure.js';
 
   let $canvas = $('#canvas');
 
+// Funzioni di manipolazione della pagina HTML
   $host_button.click(function () {
     createNewGame();
     hideMenu();
@@ -163,12 +172,17 @@ import { PacMan, Ghost } from './figure.js';
   }
 
   function disablePlayButton() {
+    $play_button.off();
     $play_button.prop('disabled', true);
     $play_button.removeClass('is-success');
     $play_button.addClass('is-disabled');
   }
 
   function enablePlayButton() {
+    $play_button.off();
+    $play_button.click(function() {
+      socket.emit('start game', game_number);
+    });
     $play_button.prop('disabled', false);
     $play_button.removeClass('is-disabled');
     $play_button.addClass('is-success');
@@ -229,6 +243,9 @@ import { PacMan, Ghost } from './figure.js';
     }
   });
 
+  /*
+  * Permette di controllare il gioco tramite swipe
+  */
   function setSwipe(movement) {
     document.addEventListener('swiped-left', function(e) {
       console.log(e.target);
@@ -259,6 +276,9 @@ import { PacMan, Ghost } from './figure.js';
     });
   }
 
+  /*
+  * Rende lo sfondo della sezione di gioco nera
+  */
   function printBackground(ctx) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 27, 23);
@@ -266,6 +286,9 @@ import { PacMan, Ghost } from './figure.js';
 
   var get_scores = true;
 
+  /*
+  * Crea una tabella con i nickname e i punteggi dei giocatori
+  */
   function getScores(data) {
     let content = '<table>';
     for(let key in data.obj) {
@@ -308,6 +331,9 @@ import { PacMan, Ghost } from './figure.js';
     $('.other_scores').html(content);
   }
 
+  /*
+  * Aggiorna la tabella creata con la funzione getScores(data)
+  */
   function updateScores(data) {
     for(let key in data.obj) {
       let user = data.obj[key];
@@ -315,6 +341,9 @@ import { PacMan, Ghost } from './figure.js';
     }
   }
 
+  /*
+  * Gestisce e crea la sezione di gioco
+  */
   function startGame(map_matrix) {
     socket.emit('new player');
     
@@ -339,27 +368,31 @@ import { PacMan, Ghost } from './figure.js';
 
     setSwipe(movement);
 
+    /*
+    * Questo listener esegue la funzione quando un pulsante viene premuto;
+    * Rileva la pressione dei tasti freccia e dei tasti A, S, D, W per gestire il movimento.
+    */
     document.addEventListener('keydown', function (event) { 
       switch (event.keyCode) {
-        case 37: // A
+        case 37: 
           movement.left = true;
           break;
         case 65:
           movement.left = true;
           break;
-        case 38: // W
+        case 38: 
           movement.up = true;
           break;
         case 87: 
           movement.up = true;
           break;
-        case 39: // D
+        case 39: 
           movement.right = true;
           break;
         case 68: 
           movement.right = true;
           break;
-        case 40: // S
+        case 40: 
           movement.down = true;
           break;
         case 83:
@@ -373,6 +406,9 @@ import { PacMan, Ghost } from './figure.js';
         }
     });
 
+    /*
+    * Questo listener esegue la funzione quando un pulsante viene rilasciato;
+    */
     document.addEventListener('keyup', function (event) {
       switch (event.keyCode) {
         case 37:
@@ -413,6 +449,9 @@ import { PacMan, Ghost } from './figure.js';
     var old_participants = null;
     var timeServer = null;
     var cont = 0;
+    /*
+    * Aggiorna la posizione dei giocatori prelevando i dati dal server
+    */
     socket.on('state', function (locations) {
       old_participants = participants;
 
@@ -458,16 +497,26 @@ import { PacMan, Ghost } from './figure.js';
       }
     });
 
+    /*
+    * Seguendo le direttive del server, 
+    * modifica un campo della mappa e mostra la modifica a schermo
+    */
     socket.on('element', function (data) { 
       map.matrix[data.pos.y][data.pos.x] = data.val;
       map.printCell(ctx, data.pos.y, data.pos.x);
     });
 
+    /*
+    * Si occupa di rimuovere i giocatori che lasciano la partita
+    */
     socket.on('player out', function (id) {
       get_scores = true;
       figuresToBeDeleted.push(id);
     });
 
+    /*
+    * Mostra la classifica dei giocatori quando la partita si conclude
+    */
     socket.on('end game', function(data) {
       $('#winner').html(data[0].nickname);
       for(let i = 0; i < data.length; i++) {
@@ -479,6 +528,9 @@ import { PacMan, Ghost } from './figure.js';
 
     var lastUpdateTime = (new Date()).getTime();
     var timeClient = null;
+    /*
+    * Mostra l'animazione di spostamento di un giocatore da una posizione ad un'altra
+    */
     setInterval(function () {
       var currentTime = (new Date()).getTime();
       var timeDifference = currentTime - lastUpdateTime;

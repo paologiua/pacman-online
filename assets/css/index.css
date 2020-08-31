@@ -15,7 +15,7 @@ body {
   background: black !important;
   text-align: center !important;
   padding: 30px;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 .menu_button {

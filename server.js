@@ -26,15 +26,25 @@ server.listen(5000, function () {
   console.log('Starting server on port 5000');
 });
 
+// Questo oggetto permette la gestione di tutte le stanze di gioco
 var games = new Games;
 
+/*
+* Gestione di una nuova connessione
+*/
 io.on('connection', function (socket) {
+  /*
+  * Crea una nuova stanza quando un utente lo richiede
+  */
   socket.on('new game', function () {
     let game_number = games.generateGame(socket.id);
     socket.emit('game number', game_number);
     socket.join(game_number);
   });
 
+  /*
+  * Controlla la validità di un numero di stanza
+  */
   socket.on('check game number', function (game_number) {
     let error = games.checkGameNumber(game_number, socket.id);
     socket.emit('valid game number', error);
@@ -43,7 +53,10 @@ io.on('connection', function (socket) {
       io.to(game_number).emit('connected users', { 'game_number' : game_number, 'participants' : games.getUsersInAGameSession(game_number) });
     }
   });
-
+  
+  /*
+  * Controlla la validità di un nickname
+  */
   socket.on('check nickname', function (nickname) {
     let game_number = games.getUserGameNumber(socket.id);
     let error = games.checkNickname(game_number, nickname);
@@ -57,6 +70,10 @@ io.on('connection', function (socket) {
     socket.emit('valid nickname', error);
   });
 
+  /*
+  * Carica i dati della mappa e imposta una sessione di gioco
+  * come iniziata
+  */
   socket.on('start game', function (game_number) {
     if(!games.game_session[game_number].started) {
       games.setGameStarted(game_number, true);
@@ -64,7 +81,10 @@ io.on('connection', function (socket) {
       io.to(game_number).emit('running', games.get(game_number).map.matrix);
     }
   });
-
+  
+  /*
+  * Rende un utente un giocatore di una sessione di gioco
+  */
   socket.on('new player', function () {
     let game_number = games.getUserGameNumber(socket.id);
     if(game_number) {
@@ -73,6 +93,10 @@ io.on('connection', function (socket) {
     }
   });
 
+  /*
+  * Riceve da un client i suoi spostamenti e li applica a una 
+  * sessionde di gioco in corso
+  */
   socket.on('movement', function (data) {
     let game_participants = games.getUsersInAGameSession(games.getUserGameNumber(socket.id));
     if(game_participants) {
@@ -95,6 +119,9 @@ io.on('connection', function (socket) {
     }
   });
 
+  /*
+  * Gestisce la disconnesione di un giocatore
+  */
   socket.on ('disconnect', function () { 
     let game_number = games.getUserGameNumber(socket.id);
     games.removeUser(game_number, socket.id);
@@ -108,6 +135,9 @@ io.on('connection', function (socket) {
 const INTERVAL = 150;
 
 var lastUpdateTime = (new Date()).getTime();
+/*
+* Gestisce e aggiorna la situazione di tutte le sessioni di gioco in corso
+*/
 setInterval(function () {
   var currentTime = (new Date()).getTime();
   var timeDifference = currentTime - lastUpdateTime;
