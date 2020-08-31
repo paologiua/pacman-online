@@ -41,7 +41,7 @@ Tutta l'interfaccia è stata pensata per essere pienamente funzionante su qualsi
 #### Smartphone:
 ![alt text](https://imgur.com/download/0Hc68Aq/) ![alt text](https://imgur.com/download/EcT8qXI/)
 
-![alt text](assets/img/mobile_game_page) ![alt text](https://imgur.com/download/EcT8qXI/)
+![alt text](assets/img/mobile_main_page.png) ![alt text](assets/img/mobile_game_page.png)
 ## Back-end
 Come già accennato, il back-end è basato su nodejs
 
