@@ -3,9 +3,15 @@ const RIGHT = 1;
 const UP = 2;
 const DOWN = 3;
 
-const POSITIONS = [{ x: 10, y: 13}, { x: 16, y: 13}, { x: 10, y: 9}, { x: 16, y: 9}];
+const POSITIONS = [{ x: 13, y: 13}, { x: 13, y: 11}, { x: 12, y: 11}, { x: 14, y: 11}];
 const ROLES = ['pacman', 'ghost'];
 const COLORS = ['pink', 'red', 'yellow', 'green'];
+
+const HIGH_VULNERABILITY = 2;
+const LOW_VULNERABILITY = 1;
+const NO_VULNERABILITY = 0;
+
+const RECOVERY_T = 1000;
 
 /*
 * Classe che si occupa di gestire le movenze e l'aspetto dei giocatori
@@ -21,15 +27,26 @@ class Player {
     }
 
     buildWithDefaultSets(x) {
-        this.pos = { ...POSITIONS[x]};
-        this.direction = x % 2;
+        this.setDefaultPosition(x);
+        this.setDefaultDirection(x);
         if(x === 0)
             this.role = ROLES[0];
         else {
             this.role = ROLES[1];
             this.color = COLORS[x];
         }
+        if(this.role === 'pacman') 
+            this.life = 3;
+        else if(this.role === 'ghost')
+            this.vulnerable = NO_VULNERABILITY; 
+    }
 
+    setDefaultPosition(x) {
+        this.pos = { ...POSITIONS[x]};
+    }
+
+    setDefaultDirection(x) {
+        this.direction = x % 2;
     }
 
     normalConstruction(pos_x, pos_y, direction, role, color) {
@@ -42,7 +59,8 @@ class Player {
 
         if(this.role === 'ghost') {
             this.color = (color in COLORS ? color : COLORS[~~(Math.random() * 3)]);
-        }
+        } else
+            this.life = 3;
     }
 
     increasePoints(n) {
@@ -82,7 +100,23 @@ class Player {
     isAnObstacle(x) {
         if(x >= 1 && x <= 14)
             return true;
+        if(this.role === 'pacman' && x === 15)
+            return true;
         return false
+    }
+
+    decreaseRecoveryTime(t) {
+        if(this.recovery_time) {
+            this.recovery_time -= t;
+            if(this.recovery_time < 0) 
+                this.recovery_time = 0;
+            return Boolean(this.recovery_time);
+        }
+        return false;
+    }
+
+    initRecoveryTime() {
+        this.recovery_time = RECOVERY_T;
     }
 
     move(map) {

@@ -101,7 +101,7 @@ class Games {
         let game_number = null;
 
         do {
-            game_number = "#" + ~~(Math.random() * (99999 - 10000) + 10000);
+            game_number = "" + ~~(Math.random() * (99999 - 10000) + 10000);
         } while(this.has(game_number));
 
         this.add(game_number);
@@ -126,7 +126,26 @@ class Games {
         
         return "";
     }
+
+    getGamesAvailable() {
+        let list = [];
+        for(let number in this.game_session) {
+            if(this.get(number).length() < 4 && !this.get(number).started) {
+                list.push({ game_number: number, length: this.get(number).length()});
+            }
+        }
+        return list;
+    }
 }
+
+const ANIMATION_T = 3500;
+
+const VULNERABILITY_T = 7000;
+const LOW_VULNERABILITY_T = 3500;
+
+const HIGH_VULNERABILITY = 2;
+const LOW_VULNERABILITY = 1;
+const NO_VULNERABILITY = 0;
 
 /*
 * Questa classe gestisce una singola sessione di gioco e 
@@ -138,7 +157,16 @@ class GameSession {
         this.participants = {};
         this.started = false;
         this.map = null;
-        this.game_name = 'catch the pellets';
+        this.pacman_number = 0;
+        this.game_name = 'classic game';
+        switch(this.game_name) {
+                case 'catch the pellets':
+                    break;
+                case 'classic game':
+                    this.initAnimationTime();
+                    this.initVulnerabilityTime();
+                    break;
+        }
     }
 
     updateGameProgress() {
@@ -146,6 +174,9 @@ class GameSession {
             switch(this.game_name) {
                 case 'catch the pellets':
                     this.catchThePellets();
+                    break;
+                case 'classic game':
+                    this.classicGame();
                     break;
                 default:
                     break;
@@ -169,10 +200,131 @@ class GameSession {
         }
     }
 
+    classicGame() {
+        for(let i = this.pacman_number; i === this.pacman_number || i % this.length() !== this.pacman_number; i++) {
+            let user = this.participants[Object.keys(this.participants)[i % this.length()]];
+            if(user.player) {
+                if(user.player.role === 'pacman') {
+                    this.pacman = user;
+                    
+                    if(this.map.isPellet(user.player.pos.x, user.player.pos.y)) {
+                        user.player.increasePoints(1);
+                        this.map.switchPelletToVoid(user.player.pos.x, user.player.pos.y);
+                    }
+                    else if(this.map.isPowerPellet(user.player.pos.x, user.player.pos.y)) {
+                        user.player.increasePoints(5);
+                        this.setVulnerableGhosts(HIGH_VULNERABILITY);
+                        this.setVulnerabilityTime();
+                        this.map.switchPelletToVoid(user.player.pos.x, user.player.pos.y);
+                    }
+                    else if(this.map.isCherry(user.player.pos.x, user.player.pos.y)) {
+                        user.player.increasePoints(10);
+                        this.map.setVoid(user.player.pos.x, user.player.pos.y);
+                    }
+                } else if(user.player.role === 'ghost') {
+                    if(this.pacman && 
+                            this.pacman.socket_id in this.participants &&
+                            this.pacman.player.pos.x === user.player.pos.x && 
+                            this.pacman.player.pos.y === user.player.pos.y) {
+                                if(user.player.vulnerable) {
+                                    this.pacman.player.increasePoints(20);
+                                    user.player.setDefaultPosition(1);
+                                    user.player.direction = 3;
+                                    user.player.vulnerable = false;
+                                    user.player.initRecoveryTime();
+                                } else {
+                                    this.pacman.player.life--;
+                                    this.lost_life = true;
+                                    this.setAnimationTime();
+                                    this.setVulnerableGhosts(NO_VULNERABILITY);
+                                }
+                    }
+                }
+            }
+        }
+    }
+
+    setVulnerableGhosts(x) {
+        for(let key in this.participants) {
+            let user = this.participants[key];
+            if(user.player && user.player.role === 'ghost')
+                user.player.vulnerable = x;
+        }
+    }
+
+    setLowVulnerableGhosts() {
+        for(let key in this.participants) {
+            let player = this.participants[key].player;
+            if(player && player.role === 'ghost' && player.vulnerable === HIGH_VULNERABILITY)
+                player.vulnerable = LOW_VULNERABILITY;
+        }
+    }
+
+    decreaseVulnerabilityTime(t) {
+        if(!this.vulnerabilityTimeOff()) {
+            this.vulnerability_time -= t;
+            if(this.vulnerability_time < 0) {
+                this.initVulnerabilityTime();
+                this.setVulnerableGhosts(NO_VULNERABILITY);
+            }
+        }
+    }
+
+    vulnerabilityTimeOff() {
+        return (this.vulnerability_time === -1);
+    }
+
+    lowVulnerabilityTime() {
+        if(this.vulnerability_time < LOW_VULNERABILITY_T && !this.vulnerabilityTimeOff())
+            this.setLowVulnerableGhosts();
+    }
+
+    setVulnerabilityTime() { this.vulnerability_time = VULNERABILITY_T;}
+
+    initVulnerabilityTime() {
+        this.vulnerability_time = -1;
+    }
+
+    repositionPlayers() {
+        this.lost_life = false;
+        for(let key in this.participants) {
+            let user = this.participants[key];
+            if(user.player) {
+                let default_number = (Object.keys(this.participants).indexOf(user.socket_id) + this.pacman_number) % this.length();
+                user.player.setDefaultPosition(default_number);
+                user.player.setDefaultDirection(default_number);
+            }
+        }
+    }
+
     endGameCheck() {
+        if(this.started) {
+            switch(this.game_name) {
+                case 'catch the pellets':
+                    return this.endCatchThePellets();
+                    break;
+                case 'classic game':
+                    return this.endClassicGame();
+                    break;
+                default:
+                    break;
+            }
+        }
+        return false;
+    }
+
+    endCatchThePellets() {
         if(!this.map)
             return false;
         return !(this.map.num_pellets);
+    }
+
+    endClassicGame() {
+        if(!(this.pacman.socket_id in this.participants)) {
+            this.pacman.player.life = 0;
+            return true;
+        }
+        return ((this.pacman.player && !this.pacman.player.life) || this.endCatchThePellets());
     }
 
     getWinningUser() {
@@ -203,9 +355,22 @@ class GameSession {
         this.started = started;
     }
 
+    getPacmanNumber() {
+        let i = 0;
+        for(let key in this.participants) {
+            let user = this.participants[key];
+            if(user.player && user.player.role === 'pacman')
+                return i;
+            i++;
+        }
+        return 0;
+    }
+
     add(socket_id) {
         if(this.length() < 4) {
             this.participants[socket_id] = new User(socket_id);
+            let random = (Math.round(Math.random() * 10)) % this.length();
+            this.pacman_number = random;
             return true;
         }
         return false;
@@ -214,6 +379,7 @@ class GameSession {
     remove(socket_id) {
         if(socket_id in this.participants) {
             delete this.participants[socket_id];
+            this.pacman_number = this.getPacmanNumber();
             return true;
         }
         return false;
@@ -226,9 +392,47 @@ class GameSession {
     }
 
     userPlays(socket_id) {
-        if(this.has(socket_id)) {
-            this.participants[socket_id].plays(Object.keys(this.participants).indexOf(socket_id));
+        if(this.has(socket_id)) { 
+            this.participants[socket_id].plays((Object.keys(this.participants).indexOf(socket_id) + this.pacman_number) % this.length());
         }
+    }
+
+    playersReady() {
+        let players_ready = true;
+        for(let key in this.participants) 
+            players_ready = players_ready && Boolean(this.participants[key].player);
+        return players_ready;
+    }
+
+    decreaseAnimationTime(t) {
+        this.animation_time -= t;
+        if(this.animation_time < 0)
+            this.animation_time = -1;
+    }
+
+    setAnimationTime() { this.animation_time = ANIMATION_T;}
+
+    animationEnd(t) { 
+        if(Boolean(this.animation_time)) 
+            this.decreaseAnimationTime(t);
+        
+        return !Boolean(this.animation_time);
+    }
+
+    animationHasStartedNow() {
+        return (this.animation_time === ANIMATION_T);
+    }
+
+    animationIsOverNow() {
+        if(this.animation_time === -1) {
+            this.initAnimationTime();
+            return true;
+        }
+        return false;
+    }
+
+    initAnimationTime() {
+        this.animation_time = 0;
     }
 }
 

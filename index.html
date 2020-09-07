@@ -17,18 +17,34 @@
             <div class="col-xs-12 col-md-8 col-lg-8">
                 <!-- MAIN PAGE -->
                 <div id="menu_page">
-                    <img src="assets/img/pacman_logo.png" class="responsive" width="700px"><br>
+                    <img id="logo" src="assets/img/pacman_logo.png" class="responsive" width="700px"><br>
                     <span class="nes-text is-primary"><h2>Online</h2></span>
-                    <button id="host_button" type="button" class="nes-btn is-warning menu_button"><h2>New game</h2></button><br>
-                    <button id="join_button" type="button" class="nes-btn is-success menu_button"><h3>Join game</h3></button><br>
+                    <button id="host_button" type="button" class="nes-btn is-warning menu_button mobile_button"><h2>New game</h2></button><br>
+                    <button id="join_button" type="button" class="nes-btn is-success menu_button mobile_button"><h3>Join game</h3></button><br>
                 </div>
+
+                <!-- JOIN PAGE -->
+                <div id="join_page" style="display:none;">
+                    <button id="join_game_number_button" type="button" class="nes-btn is-warning menu_button mobile_button"><h2>Game number</h2></button><br>
+                    <button id="list_games_button" type="button" class="nes-btn is-primary menu_button mobile_button"><h3>Games' list</h3></button><br>
+                </div>
+
+                <!-- GAMES LIST PAGE -->
+                <div id="games_list_page" style="display:none;">
+                    
+                </div>
+                <div id="games_list_controls">
+                    <button id="previous_games_list_page" type="button" class="nes-btn is-success active" style="width: 70px;"><h1>↤</h1></button>
+                    <button id="next_games_list_page" type="button" class="nes-btn is-success active" style="width: 70px;"><h1>↦</h1></button>
+                </div>
+                
 
                 <!-- NICKNAME SELECTION PAGE -->
                 <div id="nickname_page" style="display:none;">
                     <div style="background-color:#000; padding: 1rem;" class="nes-field is-inline">
                         <label for="dark_field" style="color:#fff;">Nickname</label>
                         <input type="text" id="dark_nickname_field" class="nes-input is-dark" autocomplete="off" placeholder="ex. BATMAN">&nbsp;
-                        <button id="nickname_button" type="button" class="nes-btn is-success ok_button">Ok</button>
+                        <button id="nickname_button" type="button" class="nes-btn is-success mobile_button">Ok</button>
                     </div>
                     <span id="nickname_error" class="nes-text is-error"></span>
                 </div>
@@ -38,7 +54,7 @@
                     <div style="background-color:#000; padding: 1rem;" class="nes-field is-inline">
                         <label for="dark_field" style="color:#fff;">n. Game</label>
                         <input type="text" id="dark_game_number_field" class="nes-input is-dark" autocomplete="off" placeholder="#56729">&nbsp;
-                        <button id="game_number_button" type="button" class="nes-btn is-success ok_button">Ok</button>
+                        <button id="game_number_button" type="button" class="nes-btn is-success mobile_button">Ok</button>
                     </div>
                     <span id="game_number_error" class="nes-text is-error"></span>
                 </div>
@@ -46,7 +62,7 @@
                 <!-- PLAYER LIST PAGE -->
                 <div id="player_list_page" style="display:none;">
                     <section id="player_list_section" class="nes-container is-dark member-card">
-                        Game number: <span id="game_number"></span>
+                        Game number: #<span id="game_number"></span>
                         <div class="nes-table-responsive" id="player_list">
                             <table id="player_table" class="nes-table is-bordered is-centered">
                                 <thead>
@@ -82,7 +98,8 @@
             <div class="col-md-2 col-lg-2"></div>
         </div>
     </div>
-    <div class="container">
+
+    <div id="scores" class="container" style="display:none;">
         <div class="row">
             <div class="col-md-2 col-lg-2"></div>
             <div class="col-xs-12 col-md-8 col-lg-8">
@@ -90,7 +107,9 @@
                 <div id="scoreboard">
                     <!-- VIEW OF THE PLAYER'S SCORE -->
                     <div class="score score_left">
-                        <span id="my_score" class="nes-text is-disabled inline_block"></span>
+                        <span id="my_score" class="nes-text is-disabled inline_block">
+                            
+                        </span>
                     </div>
 
                     <!-- VIEW OF THE SCORE OF THE OTHER PLAYERS -->
@@ -132,35 +151,15 @@
                     <span class="nes-text is-success inline_block">
                         
                         <!-- GAME WINNER SECTION -->
-                        <h1><span id="winner"></span> wins!</h1><br>
-
+                        <h1><span id="winner"></span></h1><br>
+                        
                         <!-- PLAYERS RANKING SECTION -->
                         <section id="ranking" class="nes-container is-dark member-card">
                                 <span class="nes-text is-success inline_block">
-                                    <table id="ranking_list">
-                                        <tbody>
-                                            <tr>
-                                                <td>1.</td>
-                                                <td id="player1">..</td>
-                                                <td id="score1">..</td>
-                                            </tr>
-                                            <tr style="color: #f7d51d;">
-                                                <td>2.</td>
-                                                <td id="player2">..</td>
-                                                <td id="score2">..</td>
-                                            </tr>
-                                            <tr style="color: #e59400;">
-                                                <td>3.</td>
-                                                <td id="player3">..</td>
-                                                <td id="score3">..</td>
-                                            </tr>
-                                            <tr style="color: #ce372b;">
-                                                <td>4.</td>
-                                                <td id="player4">..</td>
-                                                <td id="score4">..</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    Pacman:
+                                </span><br>
+                                <span id="pacman_score" class="nes-text is-success inline_block">
+                                    
                                 </span>
                         </section>
                         <button id="win_button" type="button" class="nes-btn is-success" onclick="location.reload();"><h3>New game</h3></button>
@@ -169,7 +168,7 @@
             </section>
         </div>
     </div>
-    
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/jquery-3.5.1.min.js"></script>
     <script src="assets/js/swiped-events.min.js"></script>

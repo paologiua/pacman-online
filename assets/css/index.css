@@ -2,9 +2,8 @@
   cursor: auto !important;
 }
 
-html,
-body {
-    overscroll-behavior-y: contain;
+html, body {
+  overscroll-behavior-y: contain;
 }
 
 html {
@@ -35,10 +34,54 @@ body {
   width: 100%;
 }
 
+.nes-table.is-bordered {
+  margin: 0 !important;
+}
+
 #player_list {
   margin-top: 30px;
   padding: 0;
   overflow: hidden;
+}
+
+.game_card {
+  text-align: left;
+  max-width: 500px;
+  width: 100%;
+  display: inline-block;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.game_card>div {
+  width: 100%;
+  position: relative;
+}
+
+.game_card>div>button {
+  margin: 10px;
+  margin-left: 15px;
+  width: 80px;
+  height: 80px;
+}
+
+.game_card>div>span {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  margin-top: -25px;
+}
+
+.game_card>div>span .n_players {
+  text-align: right;
+}
+
+#games_list_controls {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  margin-left: -86.01px;
+  display: none;
 }
 
 #player_list_section {
@@ -112,25 +155,23 @@ body {
 }
 
 .centered_card {
-    width: 400px;
-    height: 400px;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -200px;
-    margin-top: -200px;
+  width: 400px;
+  height: 330px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -200px;
+  margin-top: -165px;
 }
 
-.centered_card > section > div {
-    width: 100%;
-    height: 100px;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -50%;
-    margin-top: -50px;
+.centered_card>section>div {
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -50%;
+  margin-top: -50px;
 }
 
 .win_section {
@@ -158,7 +199,6 @@ body {
     padding-left: 5%;
     padding-right: 5%;
   }
-
   #ranking_list {
     width: 65vw;
   }
@@ -171,14 +211,7 @@ body {
   }
 }
 
-@media screen and (max-width: 366px) {
-  .centered_card {
-    height: 420px;
-    margin-top: -210px;
-  }
-}
-
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 769px) {
   body {
     position: absolute;
     top: 0;
@@ -188,29 +221,33 @@ body {
   }
 }
 
-@media screen and (max-width: 767px) {
-  #host_button {
-    width: 100%;
+@media screen and (max-width: 768px) {
+  .mobile_button {
+    width: 100% !important;
   }
 
-  #join_button {
-    width: 100%;
-  }
-
-  .ok_button {
-    width: 100%;
+  #join_page {
+    width: 100% !important;
   }
 
   .mobile {
     display: inline-block !important;
   }
-
   .no_mobile {
     display: none;
   }
-  
   #score-mobile {
     position: relative;
     width: 80vw;
+  }
+}
+
+@media screen and (max-width: 810px) and (min-width: 768px) {
+  .container {
+    width: 708px !important;
+  }
+
+  #logo {
+    width: 708px !important;
   }
 }

@@ -33,13 +33,16 @@ var games = new Games;
 * Gestione di una nuova connessione
 */
 io.on('connection', function (socket) {
+  console.log('User [', socket.id, '] connected');
   /*
   * Crea una nuova stanza quando un utente lo richiede
   */
   socket.on('new game', function () {
     let game_number = games.generateGame(socket.id);
+    io.emit('get games list', games.getGamesAvailable());
     socket.emit('game number', game_number);
     socket.join(game_number);
+    console.log('Game #' + game_number + ' created');
   });
 
   /*
@@ -49,6 +52,7 @@ io.on('connection', function (socket) {
     let error = games.checkGameNumber(game_number, socket.id);
     socket.emit('valid game number', error);
     if(!error) {
+      io.emit('get games list', games.getGamesAvailable());
       socket.join(game_number);
       io.to(game_number).emit('connected users', { 'game_number' : game_number, 'participants' : games.getUsersInAGameSession(game_number) });
     }
@@ -70,13 +74,19 @@ io.on('connection', function (socket) {
     socket.emit('valid nickname', error);
   });
 
+  socket.on('request games list', function () {
+    socket.emit('get games list', games.getGamesAvailable());
+  });
+
   /*
   * Carica i dati della mappa e imposta una sessione di gioco
   * come iniziata
   */
   socket.on('start game', function (game_number) {
-    if(!games.game_session[game_number].started) {
+    if(games.has(game_number) && !games.game_session[game_number].started) {
       games.setGameStarted(game_number, true);
+      console.log('Game #' + game_number + ' started');
+      io.emit('get games list', games.getGamesAvailable());
       games.get(game_number).map = new Map;
       io.to(game_number).emit('running', games.get(game_number).map.matrix);
     }
@@ -89,7 +99,7 @@ io.on('connection', function (socket) {
     let game_number = games.getUserGameNumber(socket.id);
     if(game_number) {
       games.get(game_number).userPlays(socket.id);
-      console.log('Player [', socket.id, '] in game');
+      console.log('Player [', socket.id, '] in game #' + game_number);
     }
   });
 
@@ -125,10 +135,11 @@ io.on('connection', function (socket) {
   socket.on ('disconnect', function () { 
     let game_number = games.getUserGameNumber(socket.id);
     games.removeUser(game_number, socket.id);
-
+    if(!games.has(game_number))
+      io.emit('get games list', games.getGamesAvailable());
     io.to(game_number).emit('connected users', { 'game_number' : game_number, 'participants' : games.getUsersInAGameSession(game_number) });
     io.to(game_number).emit('player out', socket.id);
-    console.log('Player [', socket.id, '] out');
+    console.log('User [', socket.id, '] out');
   }); 
 });
 
@@ -143,27 +154,46 @@ setInterval(function () {
   var timeDifference = currentTime - lastUpdateTime;
   
   for(let game_number in games.game_session) {
-    if(games.game_session[game_number].started) {
+    let game = games.game_session[game_number];
+    if(game.animationHasStartedNow())
+      io.to(game_number).emit('dead pacman animation start')
+
+    
+    if(game.animationIsOverNow()) 
+      io.to(game_number).emit('dead pacman animation end')
+    
+
+    game.decreaseVulnerabilityTime(timeDifference);
+    game.lowVulnerabilityTime();
+
+    if(game.started && game.playersReady() && game.animationEnd(timeDifference)) {
       let participants = games.getUsersInAGameSession(game_number);
-      for(let key in participants) {
-        player = participants[key].player;
-        if(player) {
+      for(let i = game.pacman_number; i === game.pacman_number || i % game.length() !== game.pacman_number; i++) {
+        let player = participants[Object.keys(participants)[i % game.length()]].player;
+        if(player && !player.decreaseRecoveryTime(timeDifference)) {
           player.updateDirection(games.get(game_number).map);
-          player.move(games.get(game_number).map);
+          player.move(game.map);
+          game.updateGameProgress();
+          if(game.lost_life)
+            break;
         }
       }
-      games.game_session[game_number].updateGameProgress();
+      io.to(game_number).emit('state', { obj: participants, time: timeDifference});
 
-      let cherry = games.game_session[game_number].map.updateCherryTime(timeDifference);
+      if(game.lost_life) {
+        game.repositionPlayers();
+        io.to(game_number).emit('state', { obj: participants, time: timeDifference});
+      }
+
+      let cherry = game.map.updateCherryTime(timeDifference);
       if(cherry) 
         io.to(game_number).emit('element', cherry);
 
-      if(games.game_session[game_number].endGameCheck()) {
-        io.to(game_number).emit('end game', games.game_session[game_number].getRanking());
+      if(game.endGameCheck()) {
+        io.to(game_number).emit('end game', { pacman_score: game.pacman.points, pacman_wins: Boolean(game.pacman.player.life)});
         games.remove(game_number);
       }
 
-      io.to(game_number).emit('state', { obj: participants, time: timeDifference});
     }
   }
   lastUpdateTime = currentTime;

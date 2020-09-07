@@ -27,6 +27,10 @@ class Figure {
 
     loadImg() {}
 
+    setDirection(direction) {
+        this.direction = direction;
+    }
+
     updatePosition(pos_x, pos_y) {
         this.old_pos_x = this.pos_x;
         this.old_pos_y = this.pos_y;
@@ -35,21 +39,10 @@ class Figure {
         this.pos_y = pos_y;
     }
 
-    print(ctx) {
-        //this.img[this.name_img].onload = () => {
-        //    ctx.drawImage(this.img[this.name_img], this.pos_x, this.pos_y, 1, 1);
-        //}
-        ctx.drawImage(this.img[this.name_img], this.pos_x, this.pos_y, 1, 1);
-    }
-
-    updateImg() {}
+    //updateImg() {}
     
     clear(ctx) { 
-        ctx.fillStyle = 'black';
-        ctx.fillRect(Number((~~this.old_pos_x - 0.1).toFixed(2)), Number((~~this.old_pos_y - 0.1).toFixed(2)), 1.2, 1.2);
-        ctx.fillRect(Number((this.old_pos_x - 0.1).toFixed(2)), Number((this.old_pos_y - 0.1).toFixed(2)), 1.2, 1.2);
-        ctx.fillRect(Number((~~this.pos_x - 0.1).toFixed(2)), Number((~~this.pos_y - 0.1).toFixed(2)), 1.2, 1.2);
-        ctx.fillRect(Number((this.pos_x - 0.1).toFixed(2)), Number((this.pos_y - 0.1).toFixed(2)), 1.2, 1.2);
+        ctx.blackXY(this.pos_x, this.pos_y);
     }
 }
 
@@ -81,9 +74,14 @@ class PacMan extends Figure {
         this.img['2d'].src = 'assets/img/pacman/pacman_2d.png';
         this.img['3d'] = new Image;
         this.img['3d'].src = 'assets/img/pacman/pacman_3d.png';
+
+        for(let i = 1; i < 13; i++) {
+            this.img['pacman_dies_' + i] = new Image;
+            this.img['pacman_dies_' + i].src = 'assets/img/pacman/pacman_dies_' + i + '.png';
+        }
     }
 
-    updateImg() {
+    updateImg() { 
         if(this.old_pos_x !== this.pos_x || 
               this.old_pos_y !== this.pos_y ||
               this.name_img === '1') {
@@ -111,7 +109,16 @@ class PacMan extends Figure {
             this.n_movements = (this.n_movements + 1) % 14;
         }
     }
+
+    print(ctx) {
+        ctx.drawImage(this.img[this.name_img], this.pos_x, this.pos_y, 1, 1);
+    }
+
+    printDied(ctx, frame) {
+        ctx.drawImage(this.img['pacman_dies_' + frame], this.pos_x, this.pos_y, 1, 1);
+    }
 }
+
 
 /*
 * Ghost è una classe che estende Figure ed è specifica per 
@@ -120,6 +127,12 @@ class PacMan extends Figure {
 class Ghost extends Figure {
     constructor(pos_x, pos_y, color, direction = LEFT) {
         super(pos_x, pos_y, direction, color);
+        this.pos_animation_x = null;
+        this.pos_animation_y = null;
+        this.old_pos_animation_x = null;
+        this.old_pos_animation_y = null;
+
+        this.vulnerable_color = '';
     }
 
     loadImg() {
@@ -171,22 +184,65 @@ class Ghost extends Figure {
         
     }
 
-    updateImg() {
+    updateImg() { 
         if(this.old_pos_x !== this.pos_x || 
               this.old_pos_y !== this.pos_y) {
-            if(this.n_movements === 0)
+            if(this.n_movements === 0) 
                 this.name_img = '1';
-            else if(this.n_movements === 7)
+             else if(this.n_movements === 7)
                 this.name_img = '2';
+
             this.n_movements = (this.n_movements + 1) % 14;
         }
     }
 
-    print(ctx) {
-        //this.img[this.name_img].onload = () => {
-        //    ctx.drawImage(this.img[this.name_img], this.pos_x, this.pos_y, 1, 1);
-        //}
-        ctx.drawImage(this.img[this.color + this.name_img], this.pos_x, this.pos_y, 1, 1);
-        ctx.drawImage(this.img['eyes_' + this.direction], this.pos_x, this.pos_y, 1, 1);
+    updateVulnerable(vulnerable) {
+        if(vulnerable === 1) {
+            if(this.vulnerable_cont === undefined)
+                this.vulnerable_cont = 0;
+            
+            if(this.vulnerable_cont === 0) 
+                this.vulnerable_color = (this.vulnerable_color ? '' : 'b');
+            
+            this.vulnerable_cont = (this.vulnerable_cont + 1) % 30;
+        }
+    }
+
+    print(ctx, vulnerable) {
+        if(vulnerable === 2)
+            ctx.drawImage(this.img['vulnerable_' + this.name_img], this.pos_x, this.pos_y, 1, 1);
+        else if(vulnerable === 1) 
+            ctx.drawImage(this.img['vulnerable_' + this.name_img + this.vulnerable_color], this.pos_x, this.pos_y, 1, 1);
+        else {
+            ctx.drawImage(this.img[this.color + this.name_img], this.pos_x, this.pos_y, 1, 1);
+            ctx.drawImage(this.img['eyes_' + this.direction], this.pos_x, this.pos_y, 1, 1);
+        }
+    }
+
+    printDeadAnimation(ctx, map, x, y) {
+        let direction = null;
+        if(this.old_pos_animation_x && this.old_pos_animation_y) {
+            map.printCellWithBlackBackground(ctx, this.old_pos_animation_y, this.old_pos_animation_x);
+            direction = LEFT;
+        }
+
+        if(this.old_pos_animation_x === this.pos_animation_x)
+            if(this.old_pos_animation_y < this.pos_animation_y)
+                direction = DOWN;
+            else
+                direction = UP;
+        else if(this.old_pos_animation_x < this.pos_animation_x)
+                direction = RIGHT;
+            else
+                direction = LEFT;
+
+        if(x, y) {
+            this.old_pos_animation_x = this.pos_animation_x;
+            this.old_pos_animation_y = this.pos_animation_y;
+            
+            this.pos_animation_x = x;
+            this.pos_animation_y = y;
+            ctx.drawImage(this.img['eyes_' + direction], x, y, 1, 1);
+        }
     }
 }
