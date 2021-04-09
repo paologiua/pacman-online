@@ -62,5 +62,5 @@ You can create a new game by pressing the New Game button. A code will be shown,
 ***Good game!***
 
 ## Info
-- ***You can find the Italian version of the readme [here](./README-IT.md).***
+- ***You can find the Italian version of the README.md [here](./README-IT.md).***
 - ***This work is the result of a university project carried out for the "Web Programming, Design & Usability" course of the University of Catania.***
