@@ -3,7 +3,7 @@
 
 Randomly a player is chosen to become PacMan. The other players will be Ghosts and will compete against PacMan
 
-The player who plays **Pac-Man** must eat all the numerous dots scattered neatly inside the maze and, in doing so, must avoid being touched by the other players (who play **ghosts**), in order not to lose one of the 3 lives. To help PacMan, there are four special "power pills", which turn the situation around by making the ghosts vulnerable, which turn blue for exactly 7 seconds; The PacMan player to earn points can in this phase go hunting for ghosts, to eat them.
+The player who plays **Pac-Man** must eat all the numerous dots scattered neatly inside the maze and, in doing so, must avoid being touched by the other players (who play **Ghosts**), in order not to lose one of the 3 lives. To help PacMan, there are four special "power pills", which turn the situation around by making the ghosts vulnerable, which turn blue for exactly 7 seconds; The PacMan player to earn points can in this phase go hunting for ghosts, to eat them.
 
 After being eaten, they return to base (the rectangle in the center of the screen), to regenerate and attack Pac-Man again.
  
