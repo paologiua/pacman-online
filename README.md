@@ -1,18 +1,18 @@
 # pacman_online
-**pacman_online** è un gioco multiplayer ispirato dall'omonimo videogame. 
+**pacman_online** is a multiplayer game inspired by the video game of the same name.
 
-In maniera casuale un giocatore viene scelto per diventare PacMan. Gli altri giocatori saranno dei Ghost e concorreranno contro PacMan
+Randomly a player is chosen to become PacMan. The other players will be Ghosts and will compete against PacMan
 
-Il giocatore che interpreta Pac-Man deve mangiare tutti i numerosi puntini disseminati ordinatamente all'interno del labirinto e, nel far questo, deve evitare di farsi toccare dagli altri giocatori (che interpretano i fantasmi), pena la perdita immediata di una delle 3 vite a disposizione. Per facilitare il compito a PacMan sono presenti, presso gli angoli dello schermo di gioco, quattro "pillole" speciali ("power pills"), che rovesciano la situazione rendendo vulnerabili i fantasmi, che diventano blu per 7 secondi esatti; Il giocatore PacMan per guadagnare punti può in questa fase andare a caccia dei fantasmi, per mangiarli.
+The player who plays Pac-Man must eat all the numerous dots scattered neatly inside the maze and, in doing so, must avoid being touched by the other players (who play ghosts), in order not to lose one of the 3 lives. To help PacMan, there are four special "power pills", which turn the situation around by making the ghosts vulnerable, which turn blue for exactly 7 seconds; The PacMan player to earn points can in this phase go hunting for ghosts, to eat them.
 
-Una volta fagocitati, però, questi tornano alla base (il rettangolo al centro dello schermo), per rigenerarsi e attaccare di nuovo Pac-Man.
+After being eaten, they return to base (the rectangle in the center of the screen), to regenerate and attack Pac-Man again.
  
-La partita termina quando PacMan:
- * raccoglie tutte le palline (sia normali che potenziate);
- * perde le sue 3 vite;
- * esce dalla partia.
+The game ends when PacMan:
+ * collects all balls (both normal and special);
+ * loses his 3 lives;
+ * leaves the party.
  
-Nel primo caso la partita è vinta da PacMan, negli altri due casi dai Ghost.
+In the first case the game is won by PacMan, in the other two cases by the Ghosts.
 
 ### Requisiti
 Prima di proseguire, è necessario installare **nodejs**, che è possibile scaricare dal [sito ufficiale](https://nodejs.org/).
