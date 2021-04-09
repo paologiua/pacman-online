@@ -17,6 +17,9 @@ In the first case the game is won by PacMan, in the other two cases by the Ghost
 ### Requisiti
 Prima di proseguire, è necessario installare **nodejs**, che è possibile scaricare dal [sito ufficiale](https://nodejs.org/).
 
+### Requirements
+Before continuing, you need to install **Node.js**, which you can download from the *[official site](https://nodejs.org/)*.
+
 ## Come eseguire il progetto
 Il primo passo è clonare l'intero progetto.
 ```
