@@ -1,5 +1,5 @@
-# PacmanOnline
-**PacmanOnline** is a multiplayer game inspired by the video game of the same name.
+# pacman_online
+**pacman_online** is a multiplayer game inspired by the video game of the same name.
 
 Randomly a player is chosen to become PacMan. The other players will be Ghosts and will compete against PacMan
 
