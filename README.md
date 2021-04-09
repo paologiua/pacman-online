@@ -3,7 +3,7 @@
 
 Randomly a player is chosen to become PacMan. The other players will be Ghosts and will compete against PacMan
 
-The player who plays Pac-Man must eat all the numerous dots scattered neatly inside the maze and, in doing so, must avoid being touched by the other players (who play ghosts), in order not to lose one of the 3 lives. To help PacMan, there are four special "power pills", which turn the situation around by making the ghosts vulnerable, which turn blue for exactly 7 seconds; The PacMan player to earn points can in this phase go hunting for ghosts, to eat them.
+The player who plays **Pac-Man** must eat all the numerous dots scattered neatly inside the maze and, in doing so, must avoid being touched by the other players (who play **ghosts**), in order not to lose one of the 3 lives. To help PacMan, there are four special "power pills", which turn the situation around by making the ghosts vulnerable, which turn blue for exactly 7 seconds; The PacMan player to earn points can in this phase go hunting for ghosts, to eat them.
 
 After being eaten, they return to base (the rectangle in the center of the screen), to regenerate and attack Pac-Man again.
  
@@ -54,7 +54,7 @@ The interface has been designed to work on any resolution. Pacman_online can be 
 ## Back-end
 The back-end is based on **Node.js**.
 
-Communication between client and server uses Socket.IO, a Javascript library for real-time web applications. It includes realtime two-way communication between web clients and servers. It consists of two parts: a client-side library that runs on the browser and a server-side library for Node.js.
+Communication between client and server uses **Socket.IO**, a Javascript library for real-time web applications. It includes realtime two-way communication between web clients and servers. It consists of two parts: a client-side library that runs on the browser and a server-side library for *Node.js*.
 
 ## How to start a new game and play with friends
 You can create a new game by pressing the New Game button. A code will be shown, with which other players can access the game, by writing it in the Join Game section.
