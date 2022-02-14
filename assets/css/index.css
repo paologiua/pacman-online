@@ -194,6 +194,10 @@ body {
   width: 250px;
 }
 
+.nes-container.is-rounded.is-dark {
+  border-image-repeat: stretch !important; 
+}
+
 @media screen and (max-width: 355px) {
   #ranking {
     padding-left: 5%;
