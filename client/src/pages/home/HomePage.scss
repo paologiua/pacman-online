@@ -9,4 +9,11 @@
     height: 100px;
     width: 350px;
   }
+
+  img {
+    max-width: 100% !important;
+    height: auto;
+    max-height: 100%;
+    width: auto;
+  }
 }
