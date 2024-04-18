@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node webserver/server.js"
+    "start": "npm run server",
+    "client": "cd client && clear && npm start",
+    "server": "cd server && clear && npm start"
   },
   "author": "Paolo Giua",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "nes.css": "^2.3.0",
-    "socket.io": "^2.3.0"
-  }
+  "license": "ISC"
 }

@@ -1,7 +1,7 @@
 
 // Dependencies
 let Games = require('./games').Games;
-let Map = require('./map').Map;
+let GameMap = require('./map').Map;
 
 var express = require('express');
 var http = require('http');
@@ -14,11 +14,11 @@ var server = http.Server(app);
 var io = socketIO(server);
 
 app.set('port', 5000);
-app.use('/', express.static(__dirname + '/'));
+app.use('/', express.static(path.join(__dirname, '../client/build/')));
 
 // Routing
 app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname, 'index.html'));
+  response.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // Starts the server.
@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
       games.setGameStarted(game_number, true);
       console.log('Game #' + game_number + ' started');
       io.emit('get games list', games.getGamesAvailable());
-      games.get(game_number).map = new Map;
+      games.get(game_number).map = new GameMap;
       io.to(game_number).emit('running', games.get(game_number).map.matrix);
     }
   });
