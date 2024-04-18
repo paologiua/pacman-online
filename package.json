@@ -1,13 +1,11 @@
 {
-  "name": "node",
+  "name": "pacman-online",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node webserver/server.js"
   },
-  "author": "",
+  "author": "Paolo Giua",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
