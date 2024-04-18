@@ -48,9 +48,9 @@ For the front-end **JavaScript**, **CSS** and **HTML** were used. Also Bootstrap
 #### Responsive
 The interface has been designed to work on any resolution. Pacman_online can be played on both computers and mobile devices, such as smartphones and tablets.
 #### Smartphone:
-![alt text](assets/img/mobile_main_page.png) ![alt text](assets/img/mobile_game_page.png)
-#### Desktop:
-![alt text](assets/img/computer_main_page.png) ![alt text](assets/img/computer_game_page.png)
+![alt text](images/mobile_main_page.png) ![alt text](images/mobile_game_page.png)
+#### PC:
+![alt text](images/computer_main_page.png) ![alt text](images/computer_game_page.png)
 ## Back-end
 The back-end is based on **Node.js**.
 
