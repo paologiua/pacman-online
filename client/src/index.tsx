@@ -1,17 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'nes.css/css/nes.min.css';
 import './index.scss';
-import HomePage from './pages/home/HomePage';
-import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-  },
-]);
+import reportWebVitals from './reportWebVitals';
+
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -7,11 +7,11 @@
 
   button {
     height: 100px;
-    width: 350px;
+    width: min(100%, 350px);
   }
 
   img {
-    max-width: 100% !important;
+    max-width: 100%;
     height: auto;
     max-height: 100%;
     width: auto;
