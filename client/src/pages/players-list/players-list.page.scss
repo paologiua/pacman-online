@@ -1,0 +1,33 @@
+.PlayersListPage {
+  table {
+    margin: 10px 0 0 0 !important;
+    width: 100%;
+
+    >thead {
+      >tr {
+        background-color: #209cee;
+      }
+    }
+
+    >tbody {
+      >tr {
+        &:nth-child(n+1) {
+          background-color: #92cc41;
+        }
+        &:nth-child(n+2) {
+          background-color: #f7d51d;
+        }
+        &:nth-child(n+3) {
+          background-color: #e59400;
+        }
+        &:nth-child(n+4) {
+          background-color: #ce372b;
+        }
+      }
+    }
+  }
+
+  button {
+    width: 80px;
+  }
+}
