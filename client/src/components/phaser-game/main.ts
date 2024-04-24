@@ -3,10 +3,10 @@ import { GameScene } from './scenes/game.scene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	width: 810,
-	height: 690,
+	width: 432,
+	height: 368,
 	parent: 'game-container',
-	backgroundColor: '#ffffff',
+	backgroundColor: '#000000',
 	scene: GameScene,
 };
 

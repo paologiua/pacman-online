@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './game-selection.page.scss';
 import { Col, Row } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface GameSelectionPageState {
 	gameCode: string,
@@ -55,7 +56,9 @@ class GameSelectionPage extends Component {
 						</Row>
 					</Col>
 					<Col xs='12' md='auto'>
-						<button className='nes-btn is-success' onClick={_ => this.onSubmit()}>Ok</button>
+						<Link to="/nickname">
+							<button className='nes-btn is-success' onClick={_ => this.onSubmit()}>Ok</button>
+						</Link>
 					</Col>
 					<Col xs='12' hidden={!this.state.errorMessage}>
 						<span className='d-flex justify-content-center nes-text is-error'>
