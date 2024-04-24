@@ -1,6 +1,7 @@
-import React, { Component, FormEvent, useState } from 'react';
+import React, { Component } from 'react';
 import './nickname.page.scss';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface NicknamePageState {
 	nickname: string,
@@ -20,6 +21,8 @@ class NicknamePage extends Component {
 			this.setState({
 				errorMessage: 'Testo troppo corto',
 			});
+
+			return;
 		}
 	}
 
@@ -55,7 +58,9 @@ class NicknamePage extends Component {
 						</Row>
 					</Col>
 					<Col xs='12' md='auto'>
-						<button className='nes-btn is-success' onClick={_ => this.onSubmit()}>Ok</button>
+						<Link to="/players-list">
+							<button className='nes-btn is-success' onClick={_ => this.onSubmit()}>Ok</button>
+						</Link>
 					</Col>
 					<Col xs='12' hidden={!this.state.errorMessage}>
 						<span className='d-flex justify-content-center nes-text is-error'>

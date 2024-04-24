@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './game-selection.page.scss';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 interface GameSelectionPageState {
 	gameCode: string,
