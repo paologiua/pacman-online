@@ -1,13 +1,14 @@
 import Phaser from "phaser";
 import { FIRST_MAP } from "../maps/first.map";
 import pacman from "../../../images/spritesheets/pacman.png";
+import { Player } from "../classes/player.class";
 const imageContext = require.context("../../../images/map/", true);
 const images = imageContext.keys().map((image) => imageContext(image));
 
 export class GameScene extends Phaser.Scene {
   private _cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private _platforms!: Phaser.Physics.Arcade.StaticGroup;
-  private _player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private _player!: Player;
 
   // constructor() {
   //   super();
@@ -18,7 +19,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.spritesheet("pacman", pacman, {frameWidth: 16, frameHeight: 16});
+    this.load.spritesheet("pacman", pacman, {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
     images.forEach((image: string, imageId: number) =>
       this.load.image(`map-${imageId}`, image)
     );
@@ -67,7 +71,7 @@ export class GameScene extends Phaser.Scene {
       })
     );
 
-    this._player = this.physics.add.sprite(216, 216, "pacman");
+    this._player = new Player(this, 216, 216, "pacman");
     this._player.setCollideWorldBounds(true);
 
     this.physics.add.collider(this._player, this._platforms);
@@ -75,21 +79,15 @@ export class GameScene extends Phaser.Scene {
 
   update(): void {
     if (this._cursors.left.isDown) {
-      this._player.setVelocityX(-160);
-
-      this._player.anims.play("left", true);
+			this._player.direction = "left";
     } else if (this._cursors.right.isDown) {
-      this._player.setVelocityX(160);
-
-      this._player.anims.play("right", true);
+			this._player.direction = "right";
     } else if (this._cursors.up.isDown) {
-      this._player.setVelocityY(-160);
-
-      this._player.anims.play("up", true);
+			this._player.direction = "up";
     } else if (this._cursors.down.isDown) {
-      this._player.setVelocityY(160);
-
-      this._player.anims.play("down", true);
+			this._player.direction = "down";
     }
+		
+		this._player.update();
   }
 }
